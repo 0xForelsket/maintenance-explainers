@@ -35,6 +35,6 @@ export const PAGE = {
     bar: { k: 'Thermal growth', v: st.expand, text: `${Math.round(st.expand * 100)}%`, color: col(1 - st.expand, 0.05, 0.5) },
   }),
   labels: [
-    ['SPRUE', 'sprue'], ['MANIFOLD', 'manifold'], ['HEATER', 'manHeater'], ['NOZZLE', 'nozzleL'], ['VALVE PIN', 'pin'], ['GATE', 'gateL'], ['AIR GAP', 'airGap'], ['THERMOCOUPLE', 'tcMan'], ['JUNCTION BOX', 'jbox'],
+    ['SPRUE', 'sprue'], ['MANIFOLD', 'manifold'], ['NOZZLE', 'nozzleL'], ['VALVE PIN', 'pin'], ['GATE', 'gateL'], ['AIR GAP', 'airGap'], ['THERMOCOUPLE', 'tcMan'], ['JUNCTION BOX', 'jbox'],
   ],
 };

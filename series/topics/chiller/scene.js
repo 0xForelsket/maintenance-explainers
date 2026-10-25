@@ -3,7 +3,7 @@
 // Macro rigs: plate exchanger channels, condenser fins, scroll set (top view).
 import * as THREE from 'three';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
-import { createStage, castSurface, tubeSolid, pipeSolid, rbox, mulberry, smooth, mix, buildLUT, Streaks, Puffs, SHARED, V3, csg, cylBetween, makeGauge } from 'series/look';
+import { createStage, castSurface, tubeSolid, pipeSolid, rbox, mulberry, smooth, mix, buildLUT, Streaks, Puffs, SHARED, V3, csg, cylBetween, makeGauge, makeClock } from 'series/look';
 import { stateAt } from './story.js';
 
 export const RIG = { plates: new V3(40, 0, 0), fins: new V3(60, 0, 0), scroll: new V3(80, 0, 0) };
@@ -239,6 +239,14 @@ export async function build(renderer, { quality = 'high', fontFamily = 'sans-ser
   const rigL = new THREE.SpotLight(0xffe7cc, 0, 24, 0.6, 0.6, 1.4); scene.add(rigL, rigL.target);
   const rigSpots = [{ c: P0, pos: P0.clone().add(new V3(2, 5, 6)) }, { c: F0, pos: F0.clone().add(new V3(-2, 5, 6)) }, { c: S0, pos: S0.clone().add(new V3(1, 7, 3)) }];
 
+  // flow clocks: integrate each flow rate over time so particles slow down / stop smoothly (never run backwards)
+  const clk = (fn) => makeClock((x) => fn(stateAt(x)), 202, 0.02);
+  const airRate = (q) => q.running * (1 - 0.6 * q.foulCond) * (1 - 0.7 * q.spray);
+  const refClock = clk((q) => (q.running ? 0.4 + 0.6 * q.capacity * (1 - 0.3 * q.foulCond) : 0));
+  const waterClock = clk((q) => q.waterFlow);
+  const airClock = clk((q) => 0.3 * q.running + 0.7 * airRate(q));
+  const rigBClock = clk((q) => 0.5 + 0.5 * q.capacity);
+  const rigAirClock = clk((q) => 0.3 + 0.7 * (1 - 0.7 * q.foulCond));
   // ------------------------------------------------ update
   const tmp = new THREE.Color();
   function update(t, opts = {}) {
@@ -286,19 +294,19 @@ export async function build(renderer, { quality = 'high', fontFamily = 'sans-ser
     glint.intensity = st.check > 0.5 ? 5 : 0; glint.position.set(t < 180.8 ? 0.6 : t < 182.4 ? COMP.x - 0.45 : COMP.x + 0.12, t < 180.8 ? 2.3 : t < 182.4 ? -1.0 : -1.9, 0.8);
     // flows
     const rf = cap * (st.foulCond > 0 ? 1 - 0.3 * st.foulCond : 1);
-    refS.forEach((s) => s.update({ tau: t * (0.4 + 0.6 * rf), vis: run ? 0.5 + 0.5 * cap : 0, camPos: cam }));
-    wIn.update({ tau: t * st.waterFlow, vis: st.waterFlow * (st.crack > 0.5 ? 0 : 1), camPos: cam }); wOut.update({ tau: t * st.waterFlow, vis: st.waterFlow * (st.crack > 0.5 ? 0 : 1), camPos: cam });
-    air.update({ tau: t * (0.3 + 0.7 * airflow), vis: 0.25 + 0.75 * airflow, camPos: cam });
+    refS.forEach((s) => s.update({ tau: refClock(t), vis: run ? 0.5 + 0.5 * cap : 0, camPos: cam }));
+    wIn.update({ tau: waterClock(t), vis: st.waterFlow * (st.crack > 0.5 ? 0 : 1), camPos: cam }); wOut.update({ tau: waterClock(t), vis: st.waterFlow * (st.crack > 0.5 ? 0 : 1), camPos: cam });
+    air.update({ tau: airClock(t), vis: 0.25 + 0.75 * airflow, camPos: cam });
     // rigs
     const nearP = cam && cam.distanceTo(P0) < 16, nearS = cam && cam.distanceTo(S0) < 16;
     scaleM.opacity = 0.95 * st.foulEvap; scales.forEach((m) => { m.visible = st.foulEvap > 0.01; m.scale.x = 0.15 + 0.85 * st.foulEvap; });
     iceM.opacity = 0.85 * st.freeze; ices.forEach((m) => { m.visible = st.freeze > 0.01; m.scale.set(st.freeze, 1, 1); });
     rigCrack.material.opacity = st.crack;
-    rigW.update({ tau: t * st.waterFlow, vis: nearP ? st.waterFlow * (1 - st.freeze) : 0, camPos: null });
-    rigB.update({ tau: t * (0.5 + 0.5 * cap), vis: nearP ? 0.4 + 0.6 * cap * (1 - 0.6 * st.leak) : 0, camPos: null });
+    rigW.update({ tau: waterClock(t), vis: nearP ? st.waterFlow * (1 - st.freeze) : 0, camPos: null });
+    rigB.update({ tau: rigBClock(t), vis: nearP ? 0.4 + 0.6 * cap * (1 - 0.6 * st.leak) : 0, camPos: null });
     rigDust.visible = st.foulCond > 0.01; rigDust.scale.y = 0.35 * st.foulCond;
     rigTubeM.emissiveIntensity = nearF ? 0.08 + 0.12 * st.foulCond : 0;
-    rigAir.update({ tau: t * (0.3 + 0.7 * (1 - 0.7 * st.foulCond)), vis: nearF ? 1 - 0.65 * st.foulCond : 0, camPos: null });
+    rigAir.update({ tau: rigAirClock(t), vis: nearF ? 1 - 0.65 * st.foulCond : 0, camPos: null });
     orbTop.position.copy(S0).add(new V3(Math.cos(t * 3) * 0.28, 0, Math.sin(t * 3) * 0.28));
     pockets.update({ tau: t, vis: nearS ? 1 : 0, camPos: null });
     const rs = cam && rigSpots.find((r) => cam.distanceTo(r.c) < 16);

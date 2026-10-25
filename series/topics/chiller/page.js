@@ -36,6 +36,6 @@ export const PAGE = {
   }),
   labels: [
     ['COMPRESSOR', 'compressor'], ['CONDENSER COIL', 'coil'], ['FANS', 'fans'], ['EVAPORATOR', 'evaporator'], ['EXPANSION VALVE', 'txv'], ['SIGHT GLASS', 'sightGlass'],
-    ['FILTER DRIER', 'drier'], ['GAUGES', 'gLow'], ['STRAINER', 'strainer'], ['FLOW SWITCH', 'flowSwitch'], ['HP SWITCH', 'hpSwitch'],
+    ['GAUGES', 'gLow'], ['STRAINER', 'strainer'], ['FLOW SWITCH', 'flowSwitch'], ['HP SWITCH', 'hpSwitch'],
   ],
 };

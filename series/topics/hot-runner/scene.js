@@ -2,7 +2,7 @@
 // valve gate right), cavities and cores, wiring to a junction box. Macro rig: cold-runner shot vs hot-runner shot.
 import * as THREE from 'three';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
-import { createStage, castSurface, tubeSolid, rbox, mulberry, smooth, mix, buildLUT, Streaks, Puffs, SHARED, V3, csg, cylBetween, worldPosVertex } from 'series/look';
+import { createStage, castSurface, tubeSolid, rbox, mulberry, smooth, mix, buildLUT, Streaks, Puffs, SHARED, V3, csg, cylBetween, worldPosVertex, makeClock } from 'series/look';
 import { stateAt } from './story.js';
 
 export const RIG = { runner: new V3(40, 0, 0) };
@@ -237,6 +237,8 @@ export async function build(renderer, { quality = 'high', fontFamily = 'sans-ser
   const rigPlinth = new THREE.Mesh(rbox(9, 0.2, 3, 0.05), new THREE.MeshStandardMaterial({ color: 0x2a3036, roughness: 0.6, metalness: 0.2 })); rigPlinth.position.copy(R0).add(new V3(0, -0.42, 0)); rigPlinth.receiveShadow = shadows; scene.add(rigPlinth);
   const rigL = new THREE.SpotLight(0xffe7cc, 0, 24, 0.6, 0.6, 1.4); scene.add(rigL, rigL.target);
 
+  // melt flow clock: integral of the flow rate, so streaks surge and settle instead of jumping
+  const flowClock = makeClock((x) => 0.5 + stateAt(x).flow, 212, 0.01);
   // ------------------------------------------------ update
   const tmpC = new THREE.Color();
   function update(t, opts = {}) {
@@ -322,7 +324,7 @@ export async function build(renderer, { quality = 'high', fontFamily = 'sans-ser
     glint.intensity = st.pinLift > 0.5 ? 6 * smooth(202.4, 203.0, t) * (1 - smooth(203.6, 204.2, t)) : 0; glint.position.set(NZ.x + 0.4, 1.5, 0.6);
     // flow
     const fv = st.flow * (st.explode > 0.01 ? 0 : 1);
-    flow.forEach((f, i) => f.update({ tau: t * (0.5 + st.flow), vis: fv * (i === 1 && st.shortShot ? 0.4 : 1), camPos: cam }));
+    flow.forEach((f, i) => f.update({ tau: flowClock(t), vis: fv * (i === 1 && st.shortShot ? 0.4 : 1), camPos: cam }));
     // rig
     runU.uRed.value = smooth(16.2, 16.9, t);
     const nearRig = cam && cam.distanceTo(R0) < 18;
