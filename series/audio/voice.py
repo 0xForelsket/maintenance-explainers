@@ -6,7 +6,8 @@ from scipy import signal
 from kokoro_onnx import Kokoro
 
 # narrator defaults: George (UK male), natural, no robot effect. A topic can override with voice.json,
-# e.g. {"voice": "am_michael", "lang": "en-us", "robot": true, "speed": 0.98} (the first six videos).
+# e.g. {"voice": "bf_emma", "lang": "en-gb", "robot": false, "speed": 1.0, "align": true} (the first six videos,
+# re-voiced onto their existing timelines; the original robot voice was am_michael, en-us, robot, speed 0.98).
 VOICE = "bm_george"
 LANG = "en-gb"
 ROBOT = False
