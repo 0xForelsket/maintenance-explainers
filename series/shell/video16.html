@@ -201,7 +201,11 @@ function placeCamera(t) {
     tgt.add(new V3(Math.sin(t * f * 1.1 + 2), Math.sin(t * f * 0.9 + 3), 0).multiplyScalar(sh * d * 0.04));
   }
   cam.position.copy(pos); cam.fov = fov; cam.up.set(Math.sin(roll), Math.cos(roll), 0);
-  cam.lookAt(tgt); cam.updateProjectionMatrix();
+  cam.lookAt(tgt);
+  // shift the framing sideways (subject off-centre) so side panels don't cover it
+  const sx = (typeof s.shift === 'function' ? s.shift(t, p) : s.shift) || 0;
+  if (sx) cam.setViewOffset(W, H, -sx * W, 0, W, H); else cam.clearViewOffset();
+  cam.updateProjectionMatrix();
   return { shot: s, p };
 }
 
