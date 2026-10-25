@@ -16,9 +16,11 @@ OUT_SR = 48000
 LEAD_IN = 0.45  # silence before the first line
 
 TOPIC = sys.argv[1]
+ALIGN = False   # "align": true re-voices a finished video: each line is fitted to the existing timeline.json
 if os.path.exists(f"{TOPIC}/voice.json"):
     _cfg = json.load(open(f"{TOPIC}/voice.json"))
     VOICE, LANG, ROBOT, SPEED = _cfg.get("voice", VOICE), _cfg.get("lang", LANG), _cfg.get("robot", ROBOT), _cfg.get("speed", SPEED)
+    ALIGN = _cfg.get("align", False)
 M = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "models") + os.sep
 k = Kokoro(M + "kokoro-v1.0.onnx", M + "voices-v1.0.bin")
 lines = json.load(open(f"{TOPIC}/script.json"))
@@ -136,6 +138,77 @@ def reverb(x, sr, decay=0.55, wet=0.13, seed=3):
     wet_sig = signal.fftconvolve(x, ir)[: len(x)]
     return x + wet * wet_sig * 3.0
 
+
+def stretch_to(y, n):
+    """WSOLA time-stretch y to exactly n samples (pitch unchanged)."""
+    from audiotsm import wsola
+    from audiotsm.io.array import ArrayReader, ArrayWriter
+    if n <= 0:
+        return np.zeros(0)
+    if len(y) < 2048 or abs(len(y) - n) < 0.004 * SR:
+        out = y
+    else:
+        w = ArrayWriter(1)
+        wsola(1, speed=len(y) / n).run(ArrayReader(y[np.newaxis, :].astype(np.float32)), w)
+        out = w.data[0].astype(np.float64)
+    return out[:n] if len(out) >= n else np.pad(out, (0, n - len(out)))
+
+
+def phrases(words):
+    """[(first_word, last_word, start, end)] split where the timing leaves a pause between words."""
+    out, a = [], 0
+    for i in range(len(words)):
+        if i == len(words) - 1 or words[i + 1]["s"] - words[i]["e"] > 0.02:
+            out.append((a, i, words[a]["s"], words[i]["e"]))
+            a = i + 1
+    return out
+
+
+def align_to_timeline():
+    """Fit a new voice into a finished video: every line keeps its start/end, and its phrases land on the
+    old phrase timings, so the burned-in captions and every cue stay in sync without re-rendering."""
+    old = json.load(open(f"{TOPIC}/timeline.json"))
+    script = {l["id"]: l for l in lines}
+    dry = np.zeros(int(old["total"] * SR) + SR)
+    for ol in old["lines"]:
+        text = script[ol["id"]]["text"]
+        target = ol["end"] - ol["start"]
+        sp = SPEED
+        for _ in range(2):   # pick a speaking rate that lands near the slot, then stretch the rest
+            y, sr = k.create(text, voice=VOICE, speed=sp, lang=LANG)
+            y, _ = librosa.effects.trim(y, top_db=42, frame_length=512, hop_length=128)
+            sp = float(np.clip(sp * (len(y) / sr) / target, 0.8, 1.3))
+        y = y.astype(np.float64)
+        ow, nw = ol["words"], time_words(ol["text"], y, sr)
+        op, np_ = phrases(ow), phrases(nw)
+        line = np.zeros(int(round(target * SR)))
+        ratios = []
+        fits = len(op) == len(np_) and all(a[:2] == b[:2] for a, b in zip(op, np_))
+        if fits:   # only stretch phrase-by-phrase when no phrase has to change speed audibly
+            r = [(ne - ns) / max(1e-3, oe - os_) for (_, _, os_, oe), (_, _, ns, ne) in zip(op, np_)]
+            fits = 0.87 <= min(r) and max(r) <= 1.15
+        if fits:
+            for (_, _, os_, oe), (_, _, ns, ne) in zip(op, np_):
+                seg = y[int(ns * SR):int(ne * SR)]
+                n = int(round((oe - os_) * SR)); i = int(round((os_ - ol["start"]) * SR))
+                ratios.append(len(seg) / max(1, n))
+                part = stretch_to(seg, n)
+                line[i:i + len(part)] = part[: max(0, len(line) - i)]
+            mode = "phrases"
+        else:
+            ratios.append(len(y) / len(line)); line = stretch_to(y, len(line)); mode = "whole line"
+        i = int(round(ol["start"] * SR)); dry[i:i + len(line)] += line
+        print(f'{ol["id"]:>2} speed {sp:.2f} {mode:<10} stretch {min(ratios):.2f}-{max(ratios):.2f}  {ol["text"][:60]}')
+    out = reverb(robotize(dry, SR), SR) if ROBOT else reverb(dry, SR, wet=0.08)
+    out = librosa.resample(out, orig_sr=SR, target_sr=OUT_SR)
+    out = out / (np.abs(out).max() + 1e-9) * 0.89
+    sf.write(f"{TOPIC}/voice.wav", out.astype(np.float32), OUT_SR)
+    print("aligned to existing timeline, total", old["total"])
+
+
+if ALIGN:
+    align_to_timeline()
+    sys.exit(0)
 
 segs, timeline, cursor = [], [], LEAD_IN
 for ln in lines:
