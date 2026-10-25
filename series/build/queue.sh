@@ -11,7 +11,7 @@ mkdir -p out
 for spec in "$@"; do
   topic=${spec%%:*}; dur=${spec##*:}
   echo "START $topic $(date +%T)" >> queue.log
-  node build/render.mjs --topic $topic --fps 24 --from 0 --to $dur --out frames/$topic --rscale 0.75 --skipExisting > render-$topic.log 2>&1
+  node build/render.mjs --topic $topic --fps 24 --from 0 --to $dur --out frames/$topic --rscale 0.75 --skipExisting 1 > render-$topic.log 2>&1
   echo "RENDERED $topic $(date +%T)" >> queue.log
   encode $topic &
 done

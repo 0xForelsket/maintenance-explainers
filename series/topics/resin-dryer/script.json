@@ -1,0 +1,102 @@
+[
+ {
+  "id": 1,
+  "text": "Some plastics soak up water from the air, and wet pellets make bad parts.",
+  "pause": 0.5
+ },
+ {
+  "id": 2,
+  "text": "Here's how they get dried.",
+  "pause": 0.3
+ },
+ {
+  "id": 3,
+  "text": "The desiccant resin dryer.",
+  "pause": 0.9
+ },
+ {
+  "id": 4,
+  "text": "Pellets sit in a hopper on top of the machine.",
+  "pause": 0.2
+ },
+ {
+  "id": 5,
+  "text": "Hot, very dry air is blown up through them,",
+  "pause": 0.2
+ },
+ {
+  "id": 6,
+  "text": "and pulls the moisture out of the pellets over a few hours.",
+  "pause": 0.3
+ },
+ {
+  "id": 7,
+  "text": "The wet air goes back to the dryer, through a filter and a cooler,",
+  "pause": 0.2
+ },
+ {
+  "id": 8,
+  "text": "into a bed of desiccant that soaks up the water.",
+  "pause": 0.3
+ },
+ {
+  "id": 9,
+  "text": "Two beds take turns. One dries the air, while the other is heated to drive its water out.",
+  "pause": 0.3
+ },
+ {
+  "id": 10,
+  "text": "The result is air with a dew point of minus forty degrees.",
+  "pause": 0.6
+ },
+ {
+  "id": 11,
+  "text": "But a dryer can quietly stop working.",
+  "pause": 0.2
+ },
+ {
+  "id": 12,
+  "text": "Dust clogs the filters, so the airflow drops.",
+  "pause": 0.2
+ },
+ {
+  "id": 13,
+  "text": "A heater or valve fails, and the desiccant stays saturated.",
+  "pause": 0.2
+ },
+ {
+  "id": 14,
+  "text": "Leaky hoses let wet air in, and a low hopper means the pellets don't stay long enough.",
+  "pause": 0.3
+ },
+ {
+  "id": 15,
+  "text": "Wet resin gives silver streaks, bubbles and brittle parts.",
+  "pause": 0.6
+ },
+ {
+  "id": 16,
+  "text": "Warning signs: the dew point rising, splay on the parts, and return air temperature out of its normal range.",
+  "pause": 0.6
+ },
+ {
+  "id": 17,
+  "text": "So: clean the filters every week.",
+  "pause": 0.2
+ },
+ {
+  "id": 18,
+  "text": "Watch the dew point, and set the temperature and drying time from the resin datasheet.",
+  "pause": 0.2
+ },
+ {
+  "id": 19,
+  "text": "Keep the hopper full and the hoses tight, and replace the desiccant on schedule.",
+  "pause": 0.6
+ },
+ {
+  "id": 20,
+  "text": "Dry resin. Strong parts.",
+  "pause": 0.3
+ }
+]

@@ -5,13 +5,20 @@ import json, re, numpy as np, soundfile as sf, librosa
 from scipy import signal
 from kokoro_onnx import Kokoro
 
-VOICE = "am_michael"
-SPEED = 0.98
+# narrator defaults: George (UK male), natural, no robot effect. A topic can override with voice.json,
+# e.g. {"voice": "am_michael", "lang": "en-us", "robot": true, "speed": 0.98} (the first six videos).
+VOICE = "bm_george"
+LANG = "en-gb"
+ROBOT = False
+SPEED = 1.03
 SR = 24000
 OUT_SR = 48000
 LEAD_IN = 0.45  # silence before the first line
 
 TOPIC = sys.argv[1]
+if os.path.exists(f"{TOPIC}/voice.json"):
+    _cfg = json.load(open(f"{TOPIC}/voice.json"))
+    VOICE, LANG, ROBOT, SPEED = _cfg.get("voice", VOICE), _cfg.get("lang", LANG), _cfg.get("robot", ROBOT), _cfg.get("speed", SPEED)
 M = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "models") + os.sep
 k = Kokoro(M + "kokoro-v1.0.onnx", M + "voices-v1.0.bin")
 lines = json.load(open(f"{TOPIC}/script.json"))
@@ -132,7 +139,7 @@ def reverb(x, sr, decay=0.55, wet=0.13, seed=3):
 
 segs, timeline, cursor = [], [], LEAD_IN
 for ln in lines:
-    y, sr = k.create(ln["text"], voice=VOICE, speed=SPEED, lang="en-us")
+    y, sr = k.create(ln["text"], voice=VOICE, speed=SPEED, lang=LANG)
     y, _ = librosa.effects.trim(y, top_db=42, frame_length=512, hop_length=128)
     dur = len(y) / sr
     words = time_words(ln.get("caption", ln["text"]), y, sr)
@@ -151,8 +158,7 @@ for start, y in segs:
     dry[i:i + len(y)] += y
 
 
-robo = robotize(dry, sr)
-robo = reverb(robo, sr)
+robo = reverb(robotize(dry, sr), sr) if ROBOT else reverb(dry, sr, wet=0.08)
 robo = librosa.resample(robo, orig_sr=sr, target_sr=OUT_SR)
 robo = robo / (np.abs(robo).max() + 1e-9) * 0.89
 sf.write(f"{TOPIC}/voice.wav", robo.astype(np.float32), OUT_SR)

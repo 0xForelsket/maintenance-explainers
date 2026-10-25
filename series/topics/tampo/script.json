@@ -1,0 +1,102 @@
+[
+ {
+  "id": 1,
+  "text": "That logo on the part is a layer of ink thinner than a hair.",
+  "pause": 0.5
+ },
+ {
+  "id": 2,
+  "text": "Here's how it gets there.",
+  "pause": 0.3
+ },
+ {
+  "id": 3,
+  "text": "Tampo printing. Also called pad printing.",
+  "pause": 0.9
+ },
+ {
+  "id": 4,
+  "text": "The image is etched into a steel plate, called the cliché.",
+  "pause": 0.2
+ },
+ {
+  "id": 5,
+  "text": "A sealed ink cup slides across it, filling the etch and wiping the rest clean.",
+  "pause": 0.3
+ },
+ {
+  "id": 6,
+  "text": "The ink in the etch starts to dry, and turns tacky.",
+  "pause": 0.2
+ },
+ {
+  "id": 7,
+  "text": "A soft silicone pad presses down and lifts the ink out.",
+  "pause": 0.2
+ },
+ {
+  "id": 8,
+  "text": "Then it moves over the part and presses again, wrapping the image around curves.",
+  "pause": 0.3
+ },
+ {
+  "id": 9,
+  "text": "The tacky ink sticks to the part better than to the pad, so it lets go cleanly.",
+  "pause": 0.6
+ },
+ {
+  "id": 10,
+  "text": "But small changes ruin the print.",
+  "pause": 0.2
+ },
+ {
+  "id": 11,
+  "text": "Dust and lint on the pad leave holes in the image.",
+  "pause": 0.2
+ },
+ {
+  "id": 12,
+  "text": "Ink too thick won't release. Too thin, and it blurs.",
+  "pause": 0.2
+ },
+ {
+  "id": 13,
+  "text": "A worn cup ring or cliché leaves streaks and haze.",
+  "pause": 0.2
+ },
+ {
+  "id": 14,
+  "text": "And oil or release agent on the part stops the ink from sticking.",
+  "pause": 0.6
+ },
+ {
+  "id": 15,
+  "text": "Warning signs: faded or broken prints, blurry edges, smudges, and ink that peels in a tape test.",
+  "pause": 0.6
+ },
+ {
+  "id": 16,
+  "text": "So: clean the pad with tape, and replace it when it's worn or cut.",
+  "pause": 0.2
+ },
+ {
+  "id": 17,
+  "text": "Check the ink viscosity every shift, and keep the cup sealed.",
+  "pause": 0.2
+ },
+ {
+  "id": 18,
+  "text": "Inspect the cliché and the cup ring, and keep the fixture tight.",
+  "pause": 0.2
+ },
+ {
+  "id": 19,
+  "text": "Keep the parts clean, and do a tape test on every batch.",
+  "pause": 0.6
+ },
+ {
+  "id": 20,
+  "text": "Sharp print. Every time.",
+  "pause": 0.3
+ }
+]

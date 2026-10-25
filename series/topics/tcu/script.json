@@ -1,0 +1,102 @@
+[
+ {
+  "id": 1,
+  "text": "Every part depends on one number: the temperature of the mould steel.",
+  "pause": 0.5
+ },
+ {
+  "id": 2,
+  "text": "Here's what holds it.",
+  "pause": 0.3
+ },
+ {
+  "id": 3,
+  "text": "The mould temperature controller.",
+  "pause": 0.9
+ },
+ {
+  "id": 4,
+  "text": "It's a pump, a heater and a cooling valve in one box, connected to the mould by hoses.",
+  "pause": 0.3
+ },
+ {
+  "id": 5,
+  "text": "The pump drives water out to the mould and through its channels,",
+  "pause": 0.2
+ },
+ {
+  "id": 6,
+  "text": "picking up heat from the hot plastic, then back to the unit.",
+  "pause": 0.3
+ },
+ {
+  "id": 7,
+  "text": "A sensor measures the water temperature.",
+  "pause": 0.2
+ },
+ {
+  "id": 8,
+  "text": "Too cold? The heater switches on.",
+  "pause": 0.2
+ },
+ {
+  "id": 9,
+  "text": "Too hot? The cooling valve opens, and water from the tower carries the heat away.",
+  "pause": 0.3
+ },
+ {
+  "id": 10,
+  "text": "The controller balances the two, to hold the setpoint within a degree.",
+  "pause": 0.6
+ },
+ {
+  "id": 11,
+  "text": "But the water is the problem.",
+  "pause": 0.2
+ },
+ {
+  "id": 12,
+  "text": "Hard water leaves scale on the heater, so it runs hotter and burns out.",
+  "pause": 0.2
+ },
+ {
+  "id": 13,
+  "text": "Dirt jams the cooling valve. Stuck shut, the mould overheats. Stuck open, it can't hold temperature.",
+  "pause": 0.3
+ },
+ {
+  "id": 14,
+  "text": "Pump seals wear and leak, and hoses crack from the heat.",
+  "pause": 0.6
+ },
+ {
+  "id": 15,
+  "text": "Warning signs: temperature that swings or overshoots, slow heat-up, pressure alarms, and water under the unit.",
+  "pause": 0.6
+ },
+ {
+  "id": 16,
+  "text": "So: use treated water, and descale the unit and the mould circuits on a schedule.",
+  "pause": 0.2
+ },
+ {
+  "id": 17,
+  "text": "Clean the strainer, and check the cooling valve opens and closes.",
+  "pause": 0.2
+ },
+ {
+  "id": 18,
+  "text": "Inspect the hoses, and test the over-temperature cut-out.",
+  "pause": 0.2
+ },
+ {
+  "id": 19,
+  "text": "Always cool down and depressurise before opening it. Hot water under pressure burns.",
+  "pause": 0.6
+ },
+ {
+  "id": 20,
+  "text": "Steady steel. Steady parts.",
+  "pause": 0.3
+ }
+]

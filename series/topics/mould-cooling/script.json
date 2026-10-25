@@ -1,0 +1,92 @@
+[
+ {
+  "id": 1,
+  "text": "Most of every moulding cycle is spent waiting for the part to cool.",
+  "pause": 0.5
+ },
+ {
+  "id": 2,
+  "text": "Here's how the mould gets rid of the heat.",
+  "pause": 0.3
+ },
+ {
+  "id": 3,
+  "text": "Mould cooling circuits.",
+  "pause": 0.9
+ },
+ {
+  "id": 4,
+  "text": "Water channels are drilled through the mould plates, close to the cavity.",
+  "pause": 0.2
+ },
+ {
+  "id": 5,
+  "text": "Baffles and bubblers carry water deep into the cores.",
+  "pause": 0.3
+ },
+ {
+  "id": 6,
+  "text": "Hot plastic heats the steel, and the water carries that heat away.",
+  "pause": 0.3
+ },
+ {
+  "id": 7,
+  "text": "Flow is everything. Fast, turbulent water strips heat from the wall. Slow, smooth flow barely touches it.",
+  "pause": 0.3
+ },
+ {
+  "id": 8,
+  "text": "So each circuit needs enough flow, and the water should come back only a few degrees warmer.",
+  "pause": 0.6
+ },
+ {
+  "id": 9,
+  "text": "Over time, scale coats the channels.",
+  "pause": 0.2
+ },
+ {
+  "id": 10,
+  "text": "A thin layer insulates the steel, and the flow gets smaller and smaller.",
+  "pause": 0.2
+ },
+ {
+  "id": 11,
+  "text": "Rust and dirt block the baffles completely, and O-rings start to leak.",
+  "pause": 0.3
+ },
+ {
+  "id": 12,
+  "text": "The mould runs hot in spots. Parts warp, sink marks appear, and cycle time creeps up.",
+  "pause": 0.6
+ },
+ {
+  "id": 13,
+  "text": "Warning signs: low flow on a circuit, a big temperature rise from in to out, hot spots on a thermal camera, and longer cycles.",
+  "pause": 0.6
+ },
+ {
+  "id": 14,
+  "text": "So: treat the water at the source.",
+  "pause": 0.2
+ },
+ {
+  "id": 15,
+  "text": "Measure the flow on every circuit, and log it.",
+  "pause": 0.2
+ },
+ {
+  "id": 16,
+  "text": "Descale the circuits: flush with descaler, neutralise, rinse, and blow them dry.",
+  "pause": 0.2
+ },
+ {
+  "id": 17,
+  "text": "Pressure test for leaks, replace the O-rings, and label every in and out.",
+  "pause": 0.6
+ },
+ {
+  "id": 18,
+  "text": "Clear channels. Faster cycles.",
+  "pause": 0.3
+ }
+]

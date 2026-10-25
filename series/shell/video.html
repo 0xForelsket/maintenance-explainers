@@ -75,7 +75,7 @@ svg#lines { position: absolute; inset: 0; width: 1080px; height: 1920px; overflo
     <div id="cap"></div>
   </div>
 </div>
-<script type="importmap">{"imports":{"three":"/node_modules/three/build/three.module.js","three/addons/":"/node_modules/three/examples/jsm/","series/look":"/series/shell/look.js","series/inj":"/series/shell/injection.js","three-bvh-csg":"/node_modules/three-bvh-csg/build/index.module.js","three-mesh-bvh":"/node_modules/three-mesh-bvh/build/index.module.js"}}</script>
+<script type="importmap">{"imports":{"three":"/node_modules/three/build/three.module.js","three/addons/":"/node_modules/three/examples/jsm/","series/look":"/series/shell/look.js","series/inj":"/series/shell/injection.js","series/mould":"/series/shell/mould.js","three-bvh-csg":"/node_modules/three-bvh-csg/build/index.module.js","three-mesh-bvh":"/node_modules/three-mesh-bvh/build/index.module.js"}}</script>
 <script type="module">
 import * as THREE from 'three';
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
@@ -286,6 +286,7 @@ function updateOverlay(t, st) {
   const hud = DIR.hud ? DIR.hud(t, st) : null;
   hudEl.style.opacity = hud ? hud.opacity : 0;
   hudEl.style.top = hud && hud.pos === 'mid' ? '760px' : '200px';
+  hudEl.style.background = hud && hud.backdrop ? 'rgba(6,10,14,0.74)' : 'none'; hudEl.style.padding = hud && hud.backdrop ? '26px 30px 30px' : '0'; hudEl.style.borderRadius = '16px';
   if (hud && hud.opacity > 0) {
     const key = hud.items.map((i) => i.k).join('|') + (hud.bar ? 'bar' : '');
     if (key !== hudKey) {
