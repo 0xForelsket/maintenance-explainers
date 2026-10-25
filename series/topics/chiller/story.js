@@ -43,7 +43,7 @@ export function stateAt(t) {
   const superheat = 6 + 10 * leak - 3 * ss(139, 141, t) * (1 - ss(144.9, 145, t));
   const waterOut = 7 + 1.6 * foulEvap + 2.6 * leak + 1.2 * foulCond + (running ? 0 : 3 * ss(117.6, 121, t));
   const waterIn = waterOut + 5 * (running ? capacity : 0.2);
-  const compHot = Math.max(0.6 * foulCond, t < 145.7 ? leak : 0, 0.2);
+  const compHot = Math.max(t < 117.4 ? 0.6 * foulCond : 0, t < 145.7 ? leak : 0, 0.2);
   // fix-section props
   const spray = pulse(169.0, 169.4, 172.4, 172.8, t);
   const basket = pulse(175.0, 175.6, 177.6, 178.2, t);
