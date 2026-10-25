@@ -1,0 +1,6 @@
+numpy
+scipy
+soundfile
+librosa
+pyloudnorm
+kokoro-onnx

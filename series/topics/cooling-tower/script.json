@@ -1,0 +1,92 @@
+[
+ {
+  "id": 1,
+  "text": "Every mould in this factory makes heat. This is where it goes.",
+  "pause": 0.5
+ },
+ {
+  "id": 2,
+  "text": "The cooling tower.",
+  "pause": 0.9
+ },
+ {
+  "id": 3,
+  "text": "Hot water from the process is pumped to the top,",
+  "pause": 0.2
+ },
+ {
+  "id": 4,
+  "text": "and sprayed over the fill: thin sheets that spread it into a film.",
+  "pause": 0.3
+ },
+ {
+  "id": 5,
+  "text": "A fan pulls air up through the fill.",
+  "pause": 0.2
+ },
+ {
+  "id": 6,
+  "text": "A little water evaporates, and that carries the heat away.",
+  "pause": 0.4
+ },
+ {
+  "id": 7,
+  "text": "Cooled water collects in the basin, and goes back to the moulds.",
+  "pause": 0.8
+ },
+ {
+  "id": 8,
+  "text": "But evaporation only removes pure water. The minerals stay behind.",
+  "pause": 0.3
+ },
+ {
+  "id": 9,
+  "text": "The open tower also scrubs dust from the air, and sunlight grows algae.",
+  "pause": 0.3
+ },
+ {
+  "id": 10,
+  "text": "Every pass, the water gets harder and dirtier.",
+  "pause": 0.6
+ },
+ {
+  "id": 11,
+  "text": "Minerals come out as scale on the hottest surfaces: your mould cooling channels.",
+  "pause": 0.4
+ },
+ {
+  "id": 12,
+  "text": "Scale insulates. Moulds run hotter, and cycle time creeps up.",
+  "pause": 0.9
+ },
+ {
+  "id": 13,
+  "text": "Warning signs: rising conductivity in the tower water, and drifting cycle times.",
+  "pause": 0.6
+ },
+ {
+  "id": 14,
+  "text": "So: bleed off a little water, and top up with fresh.",
+  "pause": 0.3
+ },
+ {
+  "id": 15,
+  "text": "Treat it to stop scale, corrosion and algae.",
+  "pause": 0.2
+ },
+ {
+  "id": 16,
+  "text": "Filter it, and clean the basin, fill and nozzles on schedule.",
+  "pause": 0.4
+ },
+ {
+  "id": 17,
+  "text": "Then descale the mould channels.",
+  "pause": 0.9
+ },
+ {
+  "id": 18,
+  "text": "Clean water. Cool moulds.",
+  "pause": 1.6
+ }
+]

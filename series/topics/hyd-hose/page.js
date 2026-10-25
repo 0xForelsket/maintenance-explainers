@@ -1,0 +1,40 @@
+export const PAGE = {
+  name: 'Hydraulic Hose',
+  sub: 'Construction, failure modes and safe replacement',
+  fov: 38, t0: 9.4, t1: 63.9, loopFrom: 9.4, startT: 15.0, startView: 'layers', cutRange: [2.0, 0],
+  text: {
+    overview: ['Overview', 'A hydraulic hose carries oil at high pressure to the parts of the machine that move, so it has to flex with every cycle without leaking.', 'How it works'],
+    layers: ['Layers', 'An inner tube holds the oil, steel wire braid holds the pressure, and an outer cover protects the wire from wear and weather.', 'How it works'],
+    fitting: ['Crimped fitting', 'Each end has a stem pushed into the bore and a ferrule crimped over the outside, gripping the wire braid so the hose cannot pull off.', 'How it works'],
+    flex: ['Flex & pulses', 'Every cycle the hose flexes, and every pressure spike stretches it. Spikes can be well above the working pressure.', 'How it works'],
+    fatigue: ['Fatigue', 'Over time, heat and pressure pulses fatigue the rubber. The cover hardens and cracks.', 'What goes wrong'],
+    rub: ['Rubbing', 'Where the hose rubs on an edge the cover wears through. The exposed wire rusts, and strands snap one by one.', 'What goes wrong'],
+    bends: ['Bends & twists', 'Tight bends right at the fitting and twisted hoses (see the print line spiral) strain the braid even more.', 'What goes wrong'],
+    failure: ['Weep, spray, burst', 'Finally the tube gives way: a weep at the fitting, a fine high-pressure spray from a pinhole, or a burst.', 'What goes wrong'],
+    fix: ['The fix', 'Inspect hoses on a schedule. Find leaks with cardboard, never your hand. Guard rub points, avoid twists and tight bends, and replace damaged hoses with the system depressurised and locked out.', 'The fix'],
+  },
+  views: {
+    overview: [[0.0, 2.2, 13.0], [0.4, -0.6, 0]],
+    layers: [[41.2, 2.0, 4.2], [40.0, 0.0, -0.1]],
+    fitting: [[37.4, 1.4, 3.8], [36.6, 0.0, 0]],
+    flex: [[0.6, 0.6, 9.0], [-0.2, -1.4, 0]],
+    fatigue: [[60.4, 1.2, 4.8], [59.4, 0.0, 0]],
+    rub: [[58.2, 0.9, 3.0], [57.5, 0.22, 0.2]],
+    bends: [[81.0, 0.6, 7.0], [79.6, -0.6, 0]],
+    failure: [[62.6, 1.4, 6.0], [61.4, 0.3, 0.3]],
+    fix: [[60.0, 2.4, 10.5], [58.6, 0.2, 0]],
+  },
+  sceneOpts: (t) => ({ xray: (t > 9.3 && t < 13.6) || (t > 23.6 && t < 28.2) ? 0.7 : 0 }),
+  readouts: (st) => ({
+    items: [
+      { k: 'Pressure', v: Math.round(st.pressure), unit: 'bar', color: st.pressure > 1 ? 'var(--warn)' : 'var(--ok)' },
+      { k: 'Cover', v: st.wear > 0.5 ? 'worn through' : st.crack > 0.5 ? 'cracked' : 'good', unit: '', color: st.wear > 0.5 || st.crack > 0.5 ? 'var(--bad)' : 'var(--ok)' },
+      { k: 'Leak', v: st.burst > 0.1 ? 'burst' : st.jet > 0.1 ? 'spray' : st.weep > 0.1 ? 'weep' : 'none', unit: '', color: st.burst + st.jet + st.weep > 0.1 ? 'var(--bad)' : 'var(--ok)' },
+    ],
+    bar: { k: 'Fatigue', v: Math.max(st.crack, st.wear), text: `${Math.round(Math.max(st.crack, st.wear) * 100)}%`, color: Math.max(st.crack, st.wear) > 0.6 ? 'var(--bad)' : 'var(--warn)' },
+  }),
+  labels: [
+    ['VALVE BLOCK', 'manifold'], ['MOVING PART', 'carriage'], ['INNER TUBE', 'tube'], ['STEEL BRAID', 'wire'], ['COVER', 'cover'], ['FERRULE', 'ferrule'], ['STEM', 'stem'],
+    ['RUB POINT', 'rub'], ['BULGE', 'bulge'], ['PRESSURE GAUGE', 'gauge'], ['ISOLATION VALVE', 'lock'],
+  ],
+};

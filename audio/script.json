@@ -1,0 +1,16 @@
+[
+  {"id": 1,  "text": "Somewhere in this pipe, a rust flake is heading for your machine.", "pause": 0.55},
+  {"id": 2,  "text": "Standing in its way is this.", "pause": 0.35},
+  {"id": 3,  "text": "The Y strainer.", "caption": "The Y-strainer.", "pause": 1.0},
+  {"id": 4,  "text": "Let's look inside.", "pause": 1.15},
+  {"id": 5,  "text": "Water enters here, and is forced into a stainless steel screen.", "pause": 0.45},
+  {"id": 6,  "text": "Water passes through.", "pause": 0.3},
+  {"id": 7,  "text": "Rust, scale, and sand do not.", "pause": 1.0},
+  {"id": 8,  "text": "They're trapped inside the screen, and settle at the bottom of the Y, out of the flow.", "caption": "They're trapped inside the screen, and settle at the bottom of the Y, out of the flow.", "pause": 0.6},
+  {"id": 9,  "text": "But the screen keeps filling up.", "pause": 0.9},
+  {"id": 10, "text": "The pressure difference across the strainer climbs. Flow slows down. And everything downstream starts to starve.", "pause": 0.85},
+  {"id": 11, "text": "So, open the blowdown valve.", "pause": 0.55},
+  {"id": 12, "text": "The debris is blasted out, without taking the strainer apart.", "pause": 1.0},
+  {"id": 13, "text": "Flow restored.", "pause": 1.0},
+  {"id": 14, "text": "Small part. Big job.", "pause": 1.6}
+]

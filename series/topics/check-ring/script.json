@@ -1,0 +1,87 @@
+[
+ {
+  "id": 1,
+  "text": "Every part you mould depends on a small ring at the tip of the screw.",
+  "pause": 0.5
+ },
+ {
+  "id": 2,
+  "text": "The check ring.",
+  "pause": 0.9
+ },
+ {
+  "id": 3,
+  "text": "Inside the barrel, the turning screw carries plastic forward, and melts it.",
+  "pause": 0.2
+ },
+ {
+  "id": 4,
+  "text": "Melt builds up in front and pushes the screw back. This is recovery.",
+  "pause": 0.3
+ },
+ {
+  "id": 5,
+  "text": "The ring slides forward, and melt flows through the gap.",
+  "pause": 0.4
+ },
+ {
+  "id": 6,
+  "text": "To inject, the screw drives forward like a plunger.",
+  "pause": 0.2
+ },
+ {
+  "id": 7,
+  "text": "Melt pressure slams the ring back against its seat, and seals it,",
+  "pause": 0.2
+ },
+ {
+  "id": 8,
+  "text": "so the melt goes forward, into the mould.",
+  "pause": 0.2
+ },
+ {
+  "id": 9,
+  "text": "What's left in front of the screw is the cushion.",
+  "pause": 0.9
+ },
+ {
+  "id": 10,
+  "text": "But every shot, the ring and seat wear, faster with glass-filled materials.",
+  "pause": 0.3
+ },
+ {
+  "id": 11,
+  "text": "A worn ring can't seal. During injection, melt leaks backwards past it.",
+  "pause": 0.4
+ },
+ {
+  "id": 12,
+  "text": "And the shot size changes from shot to shot.",
+  "pause": 0.9
+ },
+ {
+  "id": 13,
+  "text": "Warning signs: a cushion that drifts or bottoms out, short shots, and part weights that vary.",
+  "pause": 0.6
+ },
+ {
+  "id": 14,
+  "text": "So: log the cushion every shift.",
+  "pause": 0.3
+ },
+ {
+  "id": 15,
+  "text": "Test the ring: hold injection pressure on a full mould, and watch the screw. If it creeps forward, the ring is leaking.",
+  "pause": 0.4
+ },
+ {
+  "id": 16,
+  "text": "Pull the screw, measure the ring and seat, and replace them as a set.",
+  "pause": 0.9
+ },
+ {
+  "id": 17,
+  "text": "Steady cushion. Steady parts.",
+  "pause": 1.6
+ }
+]

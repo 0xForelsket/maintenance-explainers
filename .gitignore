@@ -1,0 +1,25 @@
+# dependencies + downloaded models
+node_modules/
+models/
+__pycache__/
+
+# render outputs (frames, encoded video, scratch stills)
+frames/
+out/
+test/
+series/frames/
+series/out/
+series/test/
+
+# generated audio (rebuild with voice.py + sfx.py)
+*.wav
+*.npy
+audio/_v.npy
+
+# logs
+*.log
+
+# local-only test copies of the pages
+site/test_local.html
+series/site/*/test_local.html
+audio/tts_test.py

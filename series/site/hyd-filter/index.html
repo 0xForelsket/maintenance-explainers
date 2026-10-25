@@ -1,0 +1,271 @@
+<title>Hydraulic Oil Filter Cutaway</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,500..900&family=Barlow:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<style>
+/* Layout: one-screen instrument — full-bleed 3D viewport, nameplate top-left, live readout top-right, chapter + transport dock pinned to the bottom. */
+:root {
+  --ink: #06090d;
+  --panel: rgba(11, 17, 23, 0.82);
+  --rule: #1f2c36;
+  --text: #e3eaef;
+  --muted: #8b9daa;
+  --water: #7fe3fb;
+  --section: #b8572b;
+  --ok: #6fe8ad; --warn: #ffb35c; --bad: #ff6a5c;
+  --display: 'Archivo', 'Arial Narrow', Arial, sans-serif;
+  --body: 'Barlow', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --mono: 'IBM Plex Mono', ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
+  color-scheme: dark;
+}
+[hidden] { display: none !important; }
+html, body { height: 100%; }
+body { background: var(--ink); color: var(--text); font: 400 16px/1.45 var(--body); overflow: hidden; }
+#app { position: relative; height: 100%; }
+canvas#view { position: absolute; inset: 0; width: 100%; height: 100%; display: block; touch-action: none; outline: none; }
+.chrome { position: absolute; inset: 0; pointer-events: none; display: flex; flex-direction: column; justify-content: space-between;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 16px; gap: 12px; }
+.chrome > * { pointer-events: auto; }
+.top { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; flex-wrap: wrap; pointer-events: none; }
+.top > * { pointer-events: auto; }
+.plate { text-shadow: 0 2px 16px rgba(0,0,0,0.85); }
+.plate h1 { margin: 0; font: 800 clamp(26px, 4.2vw, 44px)/0.95 var(--display); font-stretch: 118%; letter-spacing: 0.02em; text-transform: uppercase; text-wrap: balance; }
+.plate p { margin: 8px 0 0; font: 500 12px/1.3 var(--mono); letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); }
+.gauges { background: var(--panel); border: 1px solid var(--rule); border-radius: 10px; padding: 12px 14px; backdrop-filter: blur(10px);
+  display: grid; grid-template-columns: repeat(3, auto); column-gap: 18px; row-gap: 10px; font-variant-numeric: tabular-nums; min-width: 0; }
+.g .k { font: 500 10.5px/1 var(--mono); letter-spacing: 0.14em; color: var(--muted); text-transform: uppercase; white-space: nowrap; }
+.g .v { font: 600 19px/1.2 var(--mono); margin-top: 5px; white-space: nowrap; }
+.g .v small { font-size: 12px; color: var(--muted); font-weight: 500; }
+.flow { grid-column: 1 / -1; }
+.flow .bar { height: 5px; border-radius: 3px; background: #1a252e; overflow: hidden; margin-top: 6px; }
+.flow .bar i { display: block; height: 100%; width: 100%; background: var(--ok); transition: width 0.2s linear, background 0.3s; }
+.dock { display: grid; gap: 10px; max-width: 980px; width: 100%; margin: 0 auto; }
+.story { background: var(--panel); border: 1px solid var(--rule); border-radius: 12px; padding: 14px 16px; backdrop-filter: blur(10px); min-width: 0; }
+.story h2 { margin: 0; font: 700 19px/1.15 var(--display); font-stretch: 108%; text-wrap: balance; }
+.story h2 .num { font: 500 11px/1 var(--mono); letter-spacing: 0.16em; color: var(--water); margin-right: 10px; vertical-align: 3px; }
+.story h2 .phase { font: 600 10.5px/1 var(--mono); letter-spacing: 0.16em; margin-left: 10px; vertical-align: 3px; padding: 3px 6px; border-radius: 4px; border: 1px solid currentColor; }
+.story p { margin: 6px 0 0; color: #c3ced6; max-width: 68ch; }
+.chips { display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; padding-bottom: 2px; }
+.chips::-webkit-scrollbar { display: none; }
+.chip { flex: none; font: 600 13px/1 var(--body); letter-spacing: 0.02em; color: var(--muted); background: var(--panel); border: 1px solid var(--rule);
+  border-radius: 999px; padding: 9px 13px; cursor: pointer; backdrop-filter: blur(10px); }
+.chip[aria-current="step"] { color: var(--ink); background: var(--water); border-color: var(--water); }
+.chip:hover { color: var(--text); }
+.chip[aria-current="step"]:hover { color: var(--ink); }
+.transport { display: flex; align-items: center; gap: 10px; background: var(--panel); border: 1px solid var(--rule); border-radius: 12px; padding: 8px 10px; backdrop-filter: blur(10px); flex-wrap: wrap; }
+.btn { font: 600 13px/1 var(--body); color: var(--text); background: #15212a; border: 1px solid #2a3a46; border-radius: 8px; padding: 9px 12px; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; }
+.btn:hover { border-color: #3d5262; }
+.btn[aria-pressed="true"] { border-color: var(--section); }
+.btn svg { width: 14px; height: 14px; }
+.swatch { width: 14px; height: 14px; border-radius: 3px; background: repeating-linear-gradient(135deg, var(--section) 0 4px, #8f421f 4px 6px); }
+.btn[aria-pressed="false"] .swatch { filter: grayscale(1) brightness(0.6); }
+.scrub { flex: 1 1 200px; display: flex; align-items: center; gap: 10px; min-width: 0; }
+.scrub input { flex: 1; min-width: 0; accent-color: var(--water); }
+.scrub output { font: 500 12px/1 var(--mono); color: var(--muted); font-variant-numeric: tabular-nums; width: 4.5ch; text-align: right; }
+:focus-visible { outline: 2px solid var(--water); outline-offset: 2px; }
+#labels { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+.tag { position: absolute; left: 0; top: 0; font: 600 11px/1 var(--mono); letter-spacing: 0.14em; color: var(--text); white-space: nowrap;
+  background: rgba(6, 10, 14, 0.72); border: 1px solid rgba(127, 227, 251, 0.55); border-radius: 4px; padding: 5px 7px; }
+.tag.left::before { left: auto; right: -15px; }
+.tag::before { content: ""; position: absolute; left: -15px; top: 50%; width: 9px; height: 9px; margin-top: -4.5px; border-radius: 50%; background: var(--water); box-shadow: 0 0 0 3px rgba(127,227,251,0.25); }
+#loading { position: absolute; inset: 0; display: grid; place-items: center; font: 500 12px/1 var(--mono); letter-spacing: 0.2em; color: var(--muted); text-transform: uppercase; }
+#hint { font: 500 11px/1.2 var(--mono); color: var(--muted); letter-spacing: 0.08em; }
+@media (max-width: 640px) {
+  .gauges { grid-template-columns: repeat(3, minmax(0, auto)); padding: 10px 12px; column-gap: 12px; }
+  .g .v { font-size: 16px; }
+  .story { padding: 12px 13px; }
+  .story p { font-size: 14.5px; }
+  #hint { display: none; }
+  .top { flex-direction: column; }
+}
+@media (prefers-reduced-motion: reduce) { .flow .bar i { transition: none; } }
+</style>
+
+<div id="app">
+  <canvas id="view" tabindex="0" aria-label="3D cutaway model. Drag to orbit, scroll or pinch to zoom."></canvas>
+  <div id="labels" aria-hidden="true"></div>
+  <div id="loading">Building the model…</div>
+  <div class="chrome">
+    <div class="top">
+      <div class="plate"><h1 id="name"></h1><p id="sub"></p></div>
+      <div class="gauges" id="gauges" aria-live="off"></div>
+    </div>
+    <div class="dock">
+      <div class="story"><h2><span class="num" id="chapNum"></span><span id="chapTitle"></span><span class="phase" id="phase"></span></h2><p id="chapText"></p></div>
+      <nav class="chips" id="chips" aria-label="Chapters"></nav>
+      <div class="transport">
+        <button class="btn" id="play" type="button"></button>
+        <div class="scrub"><input id="time" type="range" step="0.01" aria-label="Timeline"><output id="tout" for="time"></output></div>
+        <button class="btn" id="cut" type="button" aria-pressed="true"><span class="swatch" aria-hidden="true"></span>Cutaway</button>
+        <button class="btn" id="lab" type="button" aria-pressed="true">Labels</button>
+        <span id="hint">Drag to orbit · scroll to zoom</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/","series/look":"./look.js","series/inj":"./injection.js","three-bvh-csg":"https://cdn.jsdelivr.net/npm/three-bvh-csg@0.0.16/build/index.module.js","three-mesh-bvh":"https://cdn.jsdelivr.net/npm/three-mesh-bvh@0.8.3/build/index.module.js"}}</script>
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
+import { build } from './scene.js';
+import { CHAPTERS } from './story.js';
+import { PAGE } from './page.js';
+
+document.getElementById('name').textContent = PAGE.name;
+document.getElementById('sub').textContent = PAGE.sub;
+const canvas = document.getElementById('view');
+const small = matchMedia('(max-width: 700px)').matches;
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: false, powerPreference: 'high-performance' });
+renderer.setPixelRatio(Math.min(devicePixelRatio, small ? 1.6 : 1.75));
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.shadowMap.enabled = !small; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+try { await document.fonts.load('600 30px "IBM Plex Mono"'); } catch (e) {}
+const S = await build(renderer, { quality: small ? 'low' : 'high', fontFamily: '"IBM Plex Mono", monospace' });
+document.getElementById('loading').hidden = true;
+
+const FOV = PAGE.fov || 38;
+const cam = new THREE.PerspectiveCamera(FOV, 1, 0.05, 400);
+const controls = new OrbitControls(cam, canvas);
+controls.enableDamping = true; controls.dampingFactor = 0.08; controls.minDistance = PAGE.minDist || 1.5; controls.maxDistance = PAGE.maxDist || 80;
+const rt = new THREE.WebGLRenderTarget(4, 4, { type: THREE.HalfFloatType, samples: 4 });
+const comp = new EffectComposer(renderer, rt);
+comp.addPass(new RenderPass(S.scene, cam));
+const bloom = new UnrealBloomPass(new THREE.Vector2(4, 4), 0.42, 0.55, 0.97);
+comp.addPass(bloom);
+comp.addPass(new OutputPass());
+
+const dockEl = document.querySelector('.dock'), topEl = document.querySelector('.top');
+function resize() {
+  const w = canvas.clientWidth, h = canvas.clientHeight;
+  renderer.setSize(w, h, false); comp.setSize(w, h); bloom.setSize(w, h);
+  cam.aspect = w / h;
+  const dockTop = dockEl.getBoundingClientRect().top - canvas.getBoundingClientRect().top;
+  const topBottom = w < 700 ? topEl.getBoundingClientRect().bottom - canvas.getBoundingClientRect().top : 0;
+  const c = (topBottom + dockTop) / 2, d = Math.max(0, h / 2 - c);
+  if (d > 1) { cam.setViewOffset(w, h + 2 * d, 0, 2 * d, w, h); cam.fov = 2 * Math.atan(Math.tan((FOV * Math.PI) / 360) * (h + 2 * d) / h) * 180 / Math.PI; }
+  else { cam.clearViewOffset(); cam.fov = FOV; }
+  cam.updateProjectionMatrix();
+}
+new ResizeObserver(resize).observe(canvas);
+new ResizeObserver(resize).observe(dockEl);
+resize();
+
+let tween = null;
+function viewFor(id) {
+  const [p, t] = PAGE.views[id];
+  const pos = new THREE.Vector3(...p), tgt = new THREE.Vector3(...t);
+  const k = (cam.aspect < 1 ? Math.pow(1 / cam.aspect, 0.85) : 1) * 1.1;
+  pos.sub(tgt).multiplyScalar(k).add(tgt);
+  return { pos, tgt };
+}
+function goView(id, instant) {
+  const v = viewFor(id);
+  if (instant || reduce) { cam.position.copy(v.pos); controls.target.copy(v.tgt); controls.update(); return; }
+  tween = { t0: performance.now(), d: 1200, p0: cam.position.clone(), q0: controls.target.clone(), p1: v.pos, q1: v.tgt };
+}
+canvas.addEventListener('pointerdown', () => { tween = null; });
+canvas.addEventListener('wheel', () => { tween = null; }, { passive: true });
+
+const PH_COL = { 'How it works': 'var(--water)', 'What goes wrong': '#ff8f7a', 'Warning signs': 'var(--warn)', 'The fix': 'var(--ok)' };
+let t = PAGE.startT ?? CHAPTERS[1].t, playing = !reduce, cutOn = true, cutAnim = 1, labelsOn = true, chap = null;
+const timeEl = document.getElementById('time'), tout = document.getElementById('tout');
+timeEl.min = PAGE.t0; timeEl.max = PAGE.t1; timeEl.value = t;
+const chipsEl = document.getElementById('chips');
+CHAPTERS.forEach((c) => {
+  const b = document.createElement('button'); b.type = 'button'; b.className = 'chip'; b.textContent = c.label; b.dataset.id = c.id;
+  b.addEventListener('click', () => jump(c.id)); chipsEl.appendChild(b);
+});
+const chapterAt = (tt) => { let c = CHAPTERS[0]; for (const x of CHAPTERS) if (tt >= x.t - 0.01) c = x; return c; };
+function setChapterUI(c, fromPlay) {
+  if (chap === c.id) return;
+  if (fromPlay && c.cut === 1 && !cutOn) setCut(true);
+  chap = c.id;
+  const i = CHAPTERS.indexOf(c);
+  document.getElementById('chapNum').textContent = `${String(i + 1).padStart(2, '0')} / ${String(CHAPTERS.length).padStart(2, '0')}`;
+  const [title, body, phase] = PAGE.text[c.id];
+  document.getElementById('chapTitle').textContent = title;
+  document.getElementById('chapText').textContent = body;
+  const ph = document.getElementById('phase'); ph.textContent = phase || ''; ph.hidden = !phase; ph.style.color = PH_COL[phase] || 'var(--muted)';
+  chipsEl.querySelectorAll('.chip').forEach((b) => {
+    if (b.dataset.id === c.id) { b.setAttribute('aria-current', 'step'); b.scrollIntoView({ block: 'nearest', inline: 'nearest' }); } else b.removeAttribute('aria-current');
+  });
+}
+function jump(id) { const c = CHAPTERS.find((x) => x.id === id); t = c.t; setCut(c.cut !== 0); goView(id); setChapterUI(c); }
+const playBtn = document.getElementById('play');
+function setPlaying(p) {
+  playing = p; playBtn.setAttribute('aria-label', p ? 'Pause' : 'Play');
+  playBtn.innerHTML = p
+    ? '<svg viewBox="0 0 14 14" aria-hidden="true"><rect x="2" y="1.5" width="3.5" height="11" rx="1" fill="currentColor"/><rect x="8.5" y="1.5" width="3.5" height="11" rx="1" fill="currentColor"/></svg><span>Pause</span>'
+    : '<svg viewBox="0 0 14 14" aria-hidden="true"><path d="M3 1.8v10.4a.8.8 0 0 0 1.2.7l8.4-5.2a.8.8 0 0 0 0-1.4L4.2 1.1A.8.8 0 0 0 3 1.8z" fill="currentColor"/></svg><span>Play</span>';
+}
+playBtn.addEventListener('click', () => setPlaying(!playing));
+const cutBtn = document.getElementById('cut');
+function setCut(on) { cutOn = on; cutBtn.setAttribute('aria-pressed', String(on)); }
+cutBtn.addEventListener('click', () => setCut(!cutOn));
+const labBtn = document.getElementById('lab');
+labBtn.addEventListener('click', () => { labelsOn = !labelsOn; labBtn.setAttribute('aria-pressed', String(labelsOn)); });
+timeEl.addEventListener('input', () => { t = +timeEl.value; const c = chapterAt(t); if (c.cut === 0) setCut(false); else if (!cutOn) setCut(true); });
+setPlaying(playing);
+
+const labelsEl = document.getElementById('labels');
+const LABELS = PAGE.labels.map(([text, key]) => { const el = document.createElement('div'); el.className = 'tag'; el.textContent = text; labelsEl.appendChild(el); return { el, key }; });
+const v = new THREE.Vector3();
+function updateLabels() {
+  const w = canvas.clientWidth, h = canvas.clientHeight;
+  for (const L of LABELS) {
+    v.copy(S.anchors[L.key]).project(cam);
+    const vis = labelsOn && v.z < 1 && Math.abs(v.x) < 1.05 && Math.abs(v.y) < 1.05;
+    L.el.hidden = !vis;
+    if (vis) {
+      const x = (v.x * 0.5 + 0.5) * w, y = (-v.y * 0.5 + 0.5) * h, left = x > w * 0.64;
+      L.el.classList.toggle('left', left);
+      L.el.style.transform = left ? `translate(${(x - 14).toFixed(1)}px, ${y.toFixed(1)}px) translate(-100%, -50%)` : `translate(${(x + 14).toFixed(1)}px, ${y.toFixed(1)}px) translateY(-50%)`;
+    }
+  }
+}
+const gaugesEl = document.getElementById('gauges');
+let gKey = '';
+function updateGauges(st) {
+  const r = PAGE.readouts(st);
+  const key = r.items.map((i) => i.k).join('|') + (r.bar ? r.bar.k : '');
+  if (key !== gKey) {
+    gaugesEl.innerHTML = r.items.map(() => '<div class="g"><div class="k"></div><div class="v"></div></div>').join('') + (r.bar ? '<div class="g flow"><div class="k"></div><div class="bar"><i></i></div></div>' : '');
+    gKey = key;
+  }
+  const gs = gaugesEl.querySelectorAll('.g:not(.flow)');
+  r.items.forEach((it, n) => { gs[n].querySelector('.k').textContent = it.k; const vv = gs[n].querySelector('.v'); vv.innerHTML = `${it.v}${it.unit ? ` <small>${it.unit}</small>` : ''}`; vv.style.color = it.color || 'var(--text)'; });
+  if (r.bar) { const f = gaugesEl.querySelector('.flow'); f.querySelector('.k').textContent = `${r.bar.k} · ${r.bar.text}`; const b = f.querySelector('.bar i'); b.style.width = (Math.max(0, Math.min(1, r.bar.v)) * 100).toFixed(1) + '%'; b.style.background = r.bar.color || 'var(--ok)'; }
+}
+
+goView(PAGE.startView || CHAPTERS[1].id, true);
+setChapterUI(chapterAt(t));
+let last = performance.now();
+function frame(now) {
+  const dt = Math.min(0.05, (now - last) / 1000); last = now;
+  if (playing) { t += dt; if (t > PAGE.t1) t = PAGE.loopFrom; }
+  setChapterUI(chapterAt(t), playing);
+  timeEl.value = t.toFixed(2); tout.textContent = t.toFixed(1) + 's';
+  const target = cutOn ? 1 : 0;
+  cutAnim += (target - cutAnim) * Math.min(1, dt * (reduce ? 60 : 3.2));
+  if (Math.abs(target - cutAnim) < 0.002) cutAnim = target;
+  if (tween) {
+    const u = Math.min(1, (now - tween.t0) / tween.d), e = u < 0.5 ? 4 * u * u * u : 1 - Math.pow(-2 * u + 2, 3) / 2;
+    cam.position.lerpVectors(tween.p0, tween.p1, e); controls.target.lerpVectors(tween.q0, tween.q1, e);
+    if (u >= 1) tween = null;
+  }
+  controls.update();
+  const st = S.update(t, { cut: cutAnim, cutRange: PAGE.cutRange, camPos: cam.position, ...(PAGE.sceneOpts ? PAGE.sceneOpts(t) : {}) });
+  S.lights.headlamp.intensity = 0;
+  updateGauges(st);
+  comp.render();
+  updateLabels();
+  requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
+</script>

@@ -1,0 +1,97 @@
+[
+ {
+  "id": 1,
+  "text": "Compressed air is never just air.",
+  "pause": 0.3
+ },
+ {
+  "id": 2,
+  "text": "Squeeze the air, and you squeeze its water too.",
+  "pause": 0.6
+ },
+ {
+  "id": 3,
+  "text": "The compressed air filter.",
+  "pause": 0.9
+ },
+ {
+  "id": 4,
+  "text": "As the air cools in the pipes, moisture condenses into water, with oil and rust along for the ride.",
+  "pause": 0.4
+ },
+ {
+  "id": 5,
+  "text": "In the filter, a deflector spins the incoming air.",
+  "pause": 0.2
+ },
+ {
+  "id": 6,
+  "text": "Heavy droplets are flung against the bowl, and run down.",
+  "pause": 0.3
+ },
+ {
+  "id": 7,
+  "text": "The air then passes through the element, which traps fine dirt,",
+  "pause": 0.2
+ },
+ {
+  "id": 8,
+  "text": "and leaves clean and dry at the top.",
+  "pause": 0.4
+ },
+ {
+  "id": 9,
+  "text": "Water collects below a baffle, where the air can't pick it back up,",
+  "pause": 0.2
+ },
+ {
+  "id": 10,
+  "text": "and a float drain opens to dump it.",
+  "pause": 0.9
+ },
+ {
+  "id": 11,
+  "text": "But drains stick. Rust and sludge jam the float.",
+  "pause": 0.3
+ },
+ {
+  "id": 12,
+  "text": "The bowl fills, and water is carried downstream, into valves, cylinders and tools.",
+  "pause": 0.5
+ },
+ {
+  "id": 13,
+  "text": "And the element clogs, so the pressure drop across it climbs.",
+  "pause": 0.9
+ },
+ {
+  "id": 14,
+  "text": "Warning signs: water above the line in the bowl, tools spitting water, and the indicator in the red.",
+  "pause": 0.6
+ },
+ {
+  "id": 15,
+  "text": "So: check the bowl every day, and press the drain's test button. It should spit.",
+  "pause": 0.3
+ },
+ {
+  "id": 16,
+  "text": "Clean or replace a stuck drain.",
+  "pause": 0.2
+ },
+ {
+  "id": 17,
+  "text": "Change the element when the indicator says so.",
+  "pause": 0.3
+ },
+ {
+  "id": 18,
+  "text": "And always release the pressure before opening the bowl.",
+  "pause": 0.9
+ },
+ {
+  "id": 19,
+  "text": "Dry air. Happy machines.",
+  "pause": 1.6
+ }
+]

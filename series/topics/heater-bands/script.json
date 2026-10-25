@@ -1,0 +1,97 @@
+[
+ {
+  "id": 1,
+  "text": "A barrel has to hold its temperature within a few degrees, all shift long.",
+  "pause": 0.3
+ },
+ {
+  "id": 2,
+  "text": "Here's how.",
+  "pause": 0.5
+ },
+ {
+  "id": 3,
+  "text": "Heater bands and thermocouples.",
+  "pause": 0.9
+ },
+ {
+  "id": 4,
+  "text": "The barrel is split into heating zones, from the feed throat to the nozzle.",
+  "pause": 0.2
+ },
+ {
+  "id": 5,
+  "text": "Each zone has heater bands clamped around it,",
+  "pause": 0.2
+ },
+ {
+  "id": 6,
+  "text": "and a thermocouple: two different metals, joined at the tip.",
+  "pause": 0.2
+ },
+ {
+  "id": 7,
+  "text": "Heat the joint, and it makes a tiny voltage that rises with temperature.",
+  "pause": 0.3
+ },
+ {
+  "id": 8,
+  "text": "The controller compares it to the setpoint, and switches the heaters to hold it.",
+  "pause": 0.3
+ },
+ {
+  "id": 9,
+  "text": "Most of the melting comes from the screw itself. The heaters keep each zone on target.",
+  "pause": 0.9
+ },
+ {
+  "id": 10,
+  "text": "But bands burn out. A loose band can't pass its heat to the barrel, so it overheats and fails.",
+  "pause": 0.3
+ },
+ {
+  "id": 11,
+  "text": "Terminals work loose, and wiring cooks.",
+  "pause": 0.3
+ },
+ {
+  "id": 12,
+  "text": "And if a thermocouple backs out of its well, it reads low,",
+  "pause": 0.2
+ },
+ {
+  "id": 13,
+  "text": "so the controller keeps heating, and the zone runs far too hot.",
+  "pause": 0.9
+ },
+ {
+  "id": 14,
+  "text": "Warning signs: a zone that won't reach setpoint, output stuck at a hundred percent, or a zone that swings.",
+  "pause": 0.6
+ },
+ {
+  "id": 15,
+  "text": "So: lock out and isolate the power first.",
+  "pause": 0.2
+ },
+ {
+  "id": 16,
+  "text": "Check each band's resistance, or its current with a clamp meter.",
+  "pause": 0.3
+ },
+ {
+  "id": 17,
+  "text": "Keep bands tight and terminals clean.",
+  "pause": 0.2
+ },
+ {
+  "id": 18,
+  "text": "And make sure every thermocouple is fully seated.",
+  "pause": 0.9
+ },
+ {
+  "id": 19,
+  "text": "Right heat. Right melt.",
+  "pause": 1.6
+ }
+]

@@ -1,0 +1,37 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><style>html,body{margin:0;background:#000;overflow:hidden}</style></head>
+<body>
+<script type="importmap">{"imports":{"three":"/node_modules/three/build/three.module.js","three/addons/":"/node_modules/three/examples/jsm/"}}</script>
+<script type="module">
+import * as THREE from 'three';
+import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
+import { SMAAPass } from 'three/addons/postprocessing/SMAAPass.js';
+import { buildStrainer } from './strainer.js';
+const q = new URLSearchParams(location.search);
+const W = +(q.get('w') || 540), H = +(q.get('h') || 960);
+const renderer = new THREE.WebGLRenderer({ antialias: false, preserveDrawingBuffer: true });
+renderer.setSize(W, H); renderer.setPixelRatio(1);
+renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.0;
+renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+document.body.appendChild(renderer.domElement);
+const S = await buildStrainer(renderer, {});
+const cam = new THREE.PerspectiveCamera(40, W / H, 0.05, 200);
+const rt = new THREE.WebGLRenderTarget(W, H, { type: THREE.HalfFloatType, samples: +(q.get('ms') ?? 0) });
+const comp = new EffectComposer(renderer, rt);
+comp.addPass(new RenderPass(S.scene, cam));
+comp.addPass(new UnrealBloomPass(new THREE.Vector2(W, H), 0.55, 0.5, 0.9));
+comp.addPass(new OutputPass());
+comp.addPass(new SMAAPass(W, H));
+window.shot = ({ t, pos, target, fov = 40, cut = null, headlamp = 0 }) => {
+  cam.position.set(...pos); S.update(t, { cut, camPos: cam.position });
+  cam.position.set(...pos); cam.lookAt(...target); cam.fov = fov; cam.updateProjectionMatrix();
+  S.lights.headlamp.intensity = headlamp; S.lights.headlamp.position.copy(cam.position);
+  comp.render();
+  return true;
+};
+window.S=S; window.renderer=renderer; window.comp=comp; window.rt=rt; window.cam=cam; window.THREE=THREE;
+window.ready = true;
+</script></body></html>

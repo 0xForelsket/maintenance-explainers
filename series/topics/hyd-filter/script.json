@@ -1,0 +1,92 @@
+[
+ {
+  "id": 1,
+  "text": "Most hydraulic failures start with dirt you can't see.",
+  "pause": 0.5
+ },
+ {
+  "id": 2,
+  "text": "The hydraulic oil filter.",
+  "pause": 0.9
+ },
+ {
+  "id": 3,
+  "text": "A moulding machine's clamp, injection and ejectors are all driven by oil under pressure.",
+  "pause": 0.3
+ },
+ {
+  "id": 4,
+  "text": "Oil returning to the tank passes through a filter.",
+  "pause": 0.3
+ },
+ {
+  "id": 5,
+  "text": "Inside is a pleated element: a huge area of fine media, folded small.",
+  "pause": 0.3
+ },
+ {
+  "id": 6,
+  "text": "Oil flows from the outside in, and particles are trapped on the media.",
+  "pause": 0.3
+ },
+ {
+  "id": 7,
+  "text": "On top sits a bypass valve, held shut by a spring,",
+  "pause": 0.2
+ },
+ {
+  "id": 8,
+  "text": "and an indicator shows the pressure drop across the element.",
+  "pause": 0.9
+ },
+ {
+  "id": 9,
+  "text": "As the element loads with dirt, that pressure drop climbs.",
+  "pause": 0.4
+ },
+ {
+  "id": 10,
+  "text": "At the bypass setting, the valve opens,",
+  "pause": 0.2
+ },
+ {
+  "id": 11,
+  "text": "and dirty oil flows straight past the element.",
+  "pause": 0.4
+ },
+ {
+  "id": 12,
+  "text": "Those particles wear the pump and jam the valves.",
+  "pause": 0.9
+ },
+ {
+  "id": 13,
+  "text": "Warning signs: the indicator in the red, a noisy pump, and rising particle counts in oil samples.",
+  "pause": 0.6
+ },
+ {
+  "id": 14,
+  "text": "So: change the element when the indicator says so, not just by the calendar.",
+  "pause": 0.3
+ },
+ {
+  "id": 15,
+  "text": "Never keep running in the red.",
+  "pause": 0.2
+ },
+ {
+  "id": 16,
+  "text": "Use the right element, and check the seals.",
+  "pause": 0.3
+ },
+ {
+  "id": 17,
+  "text": "And sample the oil to confirm it's clean.",
+  "pause": 0.9
+ },
+ {
+  "id": 18,
+  "text": "Clean oil. Long life.",
+  "pause": 1.6
+ }
+]

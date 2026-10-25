@@ -1,0 +1,381 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<style>
+@font-face { font-family: 'Inter'; font-weight: 600; src: url(/node_modules/@fontsource/inter/files/inter-latin-600-normal.woff2) format('woff2'); }
+@font-face { font-family: 'Inter'; font-weight: 800; src: url(/node_modules/@fontsource/inter/files/inter-latin-800-normal.woff2) format('woff2'); }
+@font-face { font-family: 'Space Grotesk'; font-weight: 500; src: url(/node_modules/@fontsource/space-grotesk/files/space-grotesk-latin-500-normal.woff2) format('woff2'); }
+@font-face { font-family: 'Space Grotesk'; font-weight: 700; src: url(/node_modules/@fontsource/space-grotesk/files/space-grotesk-latin-700-normal.woff2) format('woff2'); }
+@font-face { font-family: 'JetBrains Mono'; font-weight: 500; src: url(/node_modules/@fontsource/jetbrains-mono/files/jetbrains-mono-latin-500-normal.woff2) format('woff2'); }
+@font-face { font-family: 'JetBrains Mono'; font-weight: 700; src: url(/node_modules/@fontsource/jetbrains-mono/files/jetbrains-mono-latin-700-normal.woff2) format('woff2'); }
+:root { --cyan: #8fe9ff; --amber: #ffb35c; --red: #ff5a4e; --green: #6ff0b0; }
+html, body { margin: 0; background: #000; overflow: hidden; }
+#stage { position: relative; width: 1080px; height: 1920px; }
+canvas { position: absolute; inset: 0; }
+#ov { position: absolute; inset: 0; pointer-events: none; color: #fff; }
+#cap { position: absolute; left: 70px; right: 70px; top: 1235px; text-align: center; font: 800 66px/1.18 'Inter', sans-serif; letter-spacing: -0.01em;
+  text-shadow: 0 3px 14px rgba(0,0,0,0.75), 0 0 2px rgba(0,0,0,0.9); }
+#cap .w { opacity: 0.0; display: inline-block; margin: 0 0.12em; transform: translateY(10px); }
+#cap .w.on { opacity: 1; transform: none; }
+#cap .w.cur { color: var(--cyan); text-shadow: 0 0 22px rgba(120,220,255,0.55), 0 3px 14px rgba(0,0,0,0.8); }
+#title { position: absolute; left: 0; right: 0; top: 300px; text-align: center; opacity: 0; }
+#title .big { font: 700 132px/1 'Space Grotesk', sans-serif; letter-spacing: 0.06em; color: #f4f6f8; text-shadow: 0 6px 40px rgba(0,0,0,0.6); }
+#title .rule { width: 0px; height: 3px; background: var(--cyan); margin: 34px auto 26px; box-shadow: 0 0 18px rgba(120,220,255,0.7); }
+#title .sub { font: 500 34px/1.3 'JetBrains Mono', monospace; letter-spacing: 0.32em; color: #b9c7d3; text-transform: uppercase; }
+#labels { position: absolute; inset: 0; }
+svg#lines { position: absolute; inset: 0; width: 1080px; height: 1920px; overflow: visible; }
+.lab { position: absolute; font: 700 34px/1 'JetBrains Mono', monospace; letter-spacing: 0.14em; color: #fff; padding: 12px 16px 11px; white-space: nowrap;
+  background: rgba(8,14,20,0.62); border: 1.5px solid rgba(143,233,255,0.75); border-radius: 6px; backdrop-filter: blur(6px); }
+.lab small { display: block; font: 500 23px/1.2 'JetBrains Mono', monospace; letter-spacing: 0.1em; color: #a9bccb; margin-top: 7px; }
+#hud { position: absolute; left: 70px; right: 70px; top: 200px; opacity: 0; font-family: 'JetBrains Mono', monospace; }
+#hud .row { display: flex; justify-content: space-between; align-items: flex-end; }
+#hud .k { font: 500 24px/1 'JetBrains Mono', monospace; letter-spacing: 0.16em; color: #a9bccb; }
+#hud .v { font: 700 46px/1.1 'JetBrains Mono', monospace; color: #fff; margin-top: 10px; }
+#hud .dp { text-align: center; }
+#hud .dp .v { font-size: 84px; }
+#hud .bar { height: 6px; background: rgba(255,255,255,0.12); border-radius: 3px; margin-top: 22px; overflow: hidden; }
+#hud .bar i { display: block; height: 100%; width: 10%; background: var(--green); border-radius: 3px; }
+#tl { position: absolute; left: 0; right: 0; top: 220px; text-align: center; opacity: 0; }
+#tl .k { font: 500 26px/1 'JetBrains Mono', monospace; letter-spacing: 0.4em; color: var(--amber); }
+#tl .v { font: 700 92px/1.1 'Space Grotesk', sans-serif; color: #fff; margin-top: 14px; letter-spacing: 0.02em; }
+#tl .dots { display: flex; gap: 10px; justify-content: center; margin-top: 18px; }
+#tl .dots i { width: 34px; height: 6px; border-radius: 3px; background: rgba(255,255,255,0.15); }
+#tl .dots i.on { background: var(--amber); box-shadow: 0 0 12px rgba(255,180,90,0.6); }
+#end { position: absolute; left: 0; right: 0; top: 330px; text-align: center; opacity: 0; }
+#end .big { font: 700 120px/1 'Space Grotesk', sans-serif; letter-spacing: 0.06em; }
+#end .rule { width: 260px; height: 3px; background: var(--cyan); margin: 34px auto 30px; box-shadow: 0 0 18px rgba(120,220,255,0.7); }
+#end .tag { font: 800 64px/1.15 'Inter', sans-serif; }
+#end .tag em { font-style: normal; color: var(--cyan); }
+</style></head>
+<body>
+<div id="stage">
+  <div id="ov">
+    <div id="title"><div class="big">Y-STRAINER</div><div class="rule"></div><div class="sub">a filter built into the pipe</div></div>
+    <div id="tl"><div class="k">TIME-LAPSE</div><div class="v">WEEK 1</div><div class="dots"></div></div>
+    <div id="hud">
+      <div class="row">
+        <div><div class="k">P1 · INLET</div><div class="v" id="p1">4.0 bar</div></div>
+        <div class="dp"><div class="k">ΔP ACROSS SCREEN</div><div class="v" id="dp">0.3</div></div>
+        <div style="text-align:right"><div class="k">P2 · OUTLET</div><div class="v" id="p2">3.7 bar</div></div>
+      </div>
+      <div class="row" style="margin-top:22px"><div class="k">FLOW TO PROCESS</div><div class="k" id="flowv" style="color:#fff">100%</div></div>
+      <div class="bar"><i id="flowbar"></i></div>
+    </div>
+    <div id="labels"><svg id="lines"></svg></div>
+    <div id="end"><div class="big">Y-STRAINER</div><div class="rule"></div><div class="tag">Small part. <em>Big job.</em></div></div>
+    <div id="cap"></div>
+  </div>
+</div>
+<script type="importmap">{"imports":{"three":"/node_modules/three/build/three.module.js","three/addons/":"/node_modules/three/examples/jsm/"}}</script>
+<script type="module">
+import * as THREE from 'three';
+import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
+import { SMAAPass } from 'three/addons/postprocessing/SMAAPass.js';
+import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
+import { buildStrainer } from './strainer.js';
+import { stateAt, T } from './timeline.js';
+import { G, legPoint } from './geom.js';
+
+const q = new URLSearchParams(location.search);
+const SCALE = +(q.get('scale') || 1);
+const RS = +(q.get('rscale') || 1);
+const W = 1080, H = 1920, RW = Math.round(W * SCALE * RS), RH = Math.round(H * SCALE * RS);
+document.querySelector('#stage').style.transform = `scale(${SCALE})`;
+document.querySelector('#stage').style.transformOrigin = '0 0';
+await document.fonts.load('800 66px Inter'); await document.fonts.load('700 40px "Space Grotesk"'); await document.fonts.load('700 30px "JetBrains Mono"'); await document.fonts.load('600 30px Inter');
+await document.fonts.ready;
+
+const renderer = new THREE.WebGLRenderer({ antialias: false, preserveDrawingBuffer: true });
+renderer.setPixelRatio(1); renderer.setSize(W, H); // canvas css size = stage
+renderer.domElement.style.width = W + 'px'; renderer.domElement.style.height = H + 'px';
+renderer.setSize(RW, RH, false);
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+document.querySelector('#stage').prepend(renderer.domElement);
+
+const S = await buildStrainer(renderer, { fontFamily: 'Inter' });
+const cam = new THREE.PerspectiveCamera(40, W / H, 0.03, 300);
+const rt = new THREE.WebGLRenderTarget(RW, RH, { type: THREE.HalfFloatType });
+const comp = new EffectComposer(renderer, rt);
+comp.addPass(new RenderPass(S.scene, cam));
+const bloom = new UnrealBloomPass(new THREE.Vector2(RW, RH), 0.42, 0.55, 0.97);
+comp.addPass(bloom);
+comp.addPass(new OutputPass());
+comp.addPass(new SMAAPass(RW, RH));
+const grade = new ShaderPass({
+  uniforms: { tDiffuse: { value: null }, uTime: { value: 0 }, uVig: { value: 0.75 }, uGrain: { value: 0.045 }, uWarn: { value: 0 }, uCA: { value: 0.006 }, uFade: { value: 1 }, uFlash: { value: 0 } },
+  vertexShader: `varying vec2 vUv; void main(){ vUv = uv; gl_Position = projectionMatrix*modelViewMatrix*vec4(position,1.0); }`,
+  fragmentShader: `
+    uniform sampler2D tDiffuse; uniform float uTime, uVig, uGrain, uWarn, uCA, uFade, uFlash; varying vec2 vUv;
+    void main(){
+      vec2 c = vUv - 0.5;
+      float ca = uCA * dot(c, c) * 4.0;
+      vec3 col = vec3(texture2D(tDiffuse, vUv - c*ca).r, texture2D(tDiffuse, vUv).g, texture2D(tDiffuse, vUv + c*ca).b);
+      float l = dot(col, vec3(0.2126, 0.7152, 0.0722));
+      col = mix(col, col * vec3(0.9, 1.0, 1.1), (1.0 - l) * 0.4);
+      col = mix(col, col * vec3(1.06, 1.0, 0.93), clamp(l, 0.0, 1.0) * 0.3);
+      vec3 warnCol = mix(vec3(l), col, 0.55) * vec3(1.22, 0.8, 0.74);
+      col = mix(col, warnCol, uWarn * 0.6);
+      vec2 vc = c * vec2(0.5625, 1.0) * 1.55;
+      col *= mix(1.0, smoothstep(0.92, 0.18, length(vc)), uVig);
+      float n = fract(sin(dot(vUv * vec2(1080.0, 1920.0) + fract(uTime * 13.17) * 97.0, vec2(12.9898, 78.233))) * 43758.5453);
+      col += (n - 0.5) * uGrain;
+      col += uFlash;
+      gl_FragColor = vec4(col * uFade, 1.0);
+    }`,
+});
+comp.addPass(grade);
+
+// ---------------------------------------------------------------- helpers
+const V3 = THREE.Vector3;
+const clamp01 = (x) => Math.min(1, Math.max(0, x));
+const ss = (a, b, x) => { const t = clamp01((x - a) / (b - a)); return t * t * (3 - 2 * t); };
+const ease = (x) => x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2; // cubic in-out
+const easeOut = (x) => 1 - Math.pow(1 - x, 3);
+const lp = (s, r = 0, th = 0) => new V3(...legPoint(s, r, th));
+const timeline = await (await fetch('/audio/timeline.json')).json();
+
+// ---------------------------------------------------------------- shots
+// keys: [u (0..1 within shot), pos, target, fov]
+const SH = [
+  { id: 'S1', t0: 0.0, t1: 4.55, follow: true, fov: 56, hand: 0.02, headlamp: 15 },
+  { id: 'S2', t0: 4.55, t1: 6.62, keys: [[0, [-13.5, -6.8, 17.5], [0.6, -0.9, 0], 38], [1, [-11.6, -5.9, 16.0], [0.6, -1.0, 0], 38]], ez: (x) => x, hand: 0.01, reveal: true },
+  { id: 'S3', t0: 6.62, t1: 8.78, keys: [[0, [12.0, 3.4, 22.0], [0.6, -0.4, 0], 38], [1, [8.8, 2.4, 24.0], [0.7, -0.6, 0], 38]], ez: (x) => x, hand: 0.008 },
+  { id: 'S4', t0: 8.78, t1: 11.1, keys: [[0, [6.5, 1.2, 21], [0.7, -1.4, 0], 37], [1, [1.2, -1.2, 21.5], [0.8, -1.6, 0], 37]], hand: 0.006 },
+  { id: 'S5', t0: 11.1, t1: 15.45, keys: [[0, [-3.4, -0.2, 11.5], [-2.5, -0.4, 0], 38], [0.45, [-1.0, -0.6, 10.5], [-0.6, -1.0, 0], 38], [1, [1.7, -2.0, 9.6], [1.7, -2.4, 0], 38]], hand: 0.01 },
+  { id: 'S6', t0: 15.45, t1: 17.12, keys: [[0, [3.3, -3.4, 4.6], [2.55, -2.65, -0.8], 36], [1, [3.05, -3.1, 3.7], [2.5, -2.6, -0.85], 36]], ez: (x) => x, hand: 0.006 },
+  { id: 'S7', t0: 17.12, t1: 19.95, keys: [[0, [2.75, -1.95, 4.3], [2.42, -2.42, -0.9], 33], [1, [2.7, -2.1, 3.7], [2.45, -2.45, -0.9], 33]], ez: easeOut, hand: 0.006 },
+  { id: 'S8', t0: 19.95, t1: 25.85, keys: [[0, [2.3, -2.0, 5.6], [2.4, -2.5, -0.6], 36], [0.6, [3.6, -3.0, 5.6], [3.2, -3.2, -0.5], 36], [1, [4.4, -3.4, 5.2], [3.55, -3.65, -0.4], 36]], hand: 0.008 },
+  { id: 'S9', t0: 25.85, t1: 28.42, keys: [[0, [2.7, -2.4, 8.4], [2.75, -2.95, -0.3], 36], [1, [2.8, -2.6, 7.6], [2.8, -3.0, -0.3], 36]], ez: (x) => x, hand: 0.0 },
+  { id: 'S10a', t0: 28.42, t1: 31.95, keys: [[0, [0.0, -0.6, 40], [0.0, -0.3, 0], 34], [1, [0.0, -0.4, 37.5], [0.0, -0.2, 0], 34]], ez: (x) => x, hand: 0.006 },
+  { id: 'S10b', t0: 31.95, t1: 33.45, keys: [[0, [4.9, 2.2, 13.2], [5.4, 1.9, 0], 36], [1, [5.3, 2.1, 12.2], [5.7, 1.9, 0], 36]], ez: (x) => x, hand: 0.006 },
+  { id: 'S10c', t0: 33.45, t1: 36.85, keys: [[0, [8.0, 1.6, 8.5], [11.5, -0.2, -0.4], 40], [1, [13.5, 1.1, 7.5], [18.0, -0.2, -0.4], 40]], hand: 0.01 },
+  { id: 'S11', t0: 36.85, t1: 39.32, keys: [[0, [5.2, -2.6, 6.6], [4.3, -4.5, 0.6], 38], [1, [5.0, -2.9, 5.8], [4.3, -4.5, 0.6], 38]], ez: (x) => x, hand: 0.006 },
+  { id: 'S12', t0: 39.32, t1: 44.05, keys: [[0, [7.6, -2.6, 13.5], [4.6, -4.9, 0], 40], [1, [8.4, -1.6, 17.5], [4.4, -4.6, 0], 40]], ez: easeOut, hand: 0.012 },
+  { id: 'S13', t0: 44.05, t1: 46.15, keys: [[0, [1.6, -1.0, 22.5], [0.9, -1.7, 0], 37], [1, [1.0, -1.3, 21.5], [0.9, -1.7, 0], 37]], ez: (x) => x, hand: 0.006 },
+  { id: 'S14', t0: 46.15, t1: 50.0, keys: [[0, [3.0, -0.8, 22], [0.7, -1.2, 0], 37], [1, [12.5, 3.6, 25], [0.6, 2.2, 0], 37]], hand: 0.006, closeCut: true },
+];
+SH.forEach((s) => {
+  if (!s.keys) return;
+  s.posC = new THREE.CatmullRomCurve3(s.keys.map((k) => new V3(...k[1])));
+  s.tgtC = new THREE.CatmullRomCurve3(s.keys.map((k) => new V3(...k[2])));
+});
+function keyU(s, p) {
+  // map eased shot progress p to curve parameter honoring key positions
+  const ks = s.keys; const n = ks.length;
+  if (n === 2) return p;
+  for (let i = 0; i < n - 1; i++) {
+    if (p <= ks[i + 1][0]) { const f = (p - ks[i][0]) / (ks[i + 1][0] - ks[i][0]); return (i + f) / (n - 1); }
+  }
+  return 1;
+}
+const SHAKES = [
+  { t: 9.2, a: 0.025, d: 0.5 },
+  { t: T.heroImpact[0], a: 0.07, d: 0.22 }, { t: T.heroImpact[1], a: 0.04, d: 0.2 }, { t: T.heroImpact[2], a: 0.03, d: 0.2 },
+  { t: 38.85, a: 0.03, d: 0.25 },
+  { t: 39.05, a: 0.07, d: 0.6 }, { t: 39.32, a: 0.12, d: 0.7 },
+];
+function noise1(t, k) { return Math.sin(t * 1.7 + k) * 0.5 + Math.sin(t * 3.1 + k * 2.3) * 0.3 + Math.sin(t * 7.3 + k * 4.1) * 0.2; }
+
+const tmpUp = new V3();
+function placeCamera(t) {
+  const s = SH.find((x) => t >= x.t0 && t < x.t1) || SH[SH.length - 1];
+  const p = clamp01((t - s.t0) / (s.t1 - s.t0));
+  const pe = (s.ez || ease)(p);
+  let pos, tgt, fov, roll = 0;
+  if (s.follow) {
+    const u = t / 4.75;
+    const xf = -12.4 + 4.6 * (1 - Math.pow(1 - u, 1.6));
+    const push = ss(4.15, 4.55, t);
+    pos = new V3(xf - 2.7 + push * 2.2, 0.02 + 0.05 * Math.sin(t * 0.8), 0.04 * Math.cos(t * 0.6));
+    tgt = new V3(xf + 3.5, -0.08, 0);
+    fov = s.fov + push * 10;
+    roll = 0.25 * Math.sin(t * 0.35) - 0.1;
+  } else {
+    const u = keyU(s, pe);
+    pos = s.posC.getPoint(u); tgt = s.tgtC.getPoint(u);
+    const ks = s.keys; fov = ks[0][3] + (ks[ks.length - 1][3] - ks[0][3]) * pe;
+  }
+  // handheld drift
+  const hd = s.hand || 0;
+  pos.add(new V3(noise1(t, 1), noise1(t, 2), noise1(t, 3)).multiplyScalar(hd * pos.distanceTo(tgt) * 0.4));
+  // impact shakes
+  let sh = 0;
+  for (const k of SHAKES) if (t >= k.t && t < k.t + k.d * 4) sh += k.a * Math.exp(-(t - k.t) / k.d);
+  if (sh > 0) {
+    const f = 38;
+    pos.add(new V3(Math.sin(t * f * 1.3), Math.sin(t * f * 1.7 + 1), 0).multiplyScalar(sh * pos.distanceTo(tgt) * 0.05));
+    tgt.add(new V3(Math.sin(t * f * 1.1 + 2), Math.sin(t * f * 0.9 + 3), 0).multiplyScalar(sh * pos.distanceTo(tgt) * 0.04));
+  }
+  cam.position.copy(pos); cam.fov = fov; cam.up.set(Math.sin(roll), Math.cos(roll), 0);
+  cam.lookAt(tgt); cam.updateProjectionMatrix();
+  return { shot: s, p };
+}
+
+// ---------------------------------------------------------------- overlay
+const capEl = document.getElementById('cap');
+const CHUNKS = [];
+for (const line of timeline.lines) {
+  if (line.id === 14) continue;
+  const words = line.words; let cur = [];
+  const flush = () => { if (cur.length) { CHUNKS.push({ words: cur, line }); cur = []; } };
+  words.forEach((w, i) => {
+    cur.push(w);
+    const punct = /[,.;:!?]$/.test(w.w);
+    if (punct || cur.length >= 4 || (cur.length >= 3 && i < words.length - 1 && words.length - i - 1 <= 1 && false)) flush();
+  });
+  flush();
+}
+CHUNKS.forEach((c, i) => {
+  c.t0 = c.words[0].s - 0.04;
+  const next = CHUNKS[i + 1];
+  c.t1 = (next && next.line === c.line) ? next.words[0].s - 0.04 : c.line.end + 0.35;
+});
+let capKey = '';
+function updateCaptions(t) {
+  const c = CHUNKS.find((x) => t >= x.t0 && t < x.t1);
+  const key = c ? CHUNKS.indexOf(c) : -1;
+  if (key !== capKey) {
+    capEl.innerHTML = c ? c.words.map((w) => `<span class="w">${w.w}</span>`).join(' ') : '';
+    capKey = key;
+  }
+  if (!c) return;
+  const spans = capEl.querySelectorAll('.w');
+  c.words.forEach((w, i) => {
+    const el = spans[i];
+    const on = t >= w.s - 0.05;
+    const a = clamp01((t - (w.s - 0.05)) / 0.09);
+    el.style.opacity = on ? (0.35 + 0.65 * a).toFixed(3) : '0.0';
+    el.style.transform = `translateY(${((1 - a) * 10).toFixed(1)}px)`;
+    el.classList.toggle('cur', t >= w.s - 0.05 && t < w.e + 0.02);
+  });
+}
+
+const LABELS = [
+  { text: 'INLET', sub: 'flow in', anchor: 'inlet', t0: 11.75, t1: 13.9, dx: 60, dy: -300 },
+  { text: 'SCREEN', sub: 'perforated stainless', anchor: 'screenBack', t0: 14.25, t1: 16.9, dx: -80, dy: -330 },
+  { text: 'RUST', hero: 0, t0: 17.5, t1: 19.85, dx: 170, dy: -230 },
+  { text: 'SCALE', hero: 1, t0: 18.0, t1: 19.85, dx: -170, dy: -210 },
+  { text: 'SAND', hero: 2, t0: 18.5, t1: 19.85, dx: 150, dy: -170 },
+  { text: 'DEBRIS POCKET', sub: 'out of the flow', anchor: 'pocket', t0: 23.0, t1: 25.75, dx: -200, dy: -330 },
+  { text: 'P1', sub: 'inlet pressure', anchor: 'p1', t0: 28.8, t1: 31.85, dx: 60, dy: -190 },
+  { text: 'P2', sub: 'outlet pressure', anchor: 'p2', t0: 29.1, t1: 31.85, dx: -170, dy: -200 },
+  { text: 'BLOWDOWN VALVE', anchor: 'valve', t0: 37.35, t1: 39.25, dx: -160, dy: -360 },
+];
+const labelsEl = document.getElementById('labels');
+const svg = document.getElementById('lines');
+LABELS.forEach((L) => {
+  L.el = document.createElement('div'); L.el.className = 'lab';
+  L.el.innerHTML = L.text + (L.sub ? `<small>${L.sub}</small>` : '');
+  labelsEl.appendChild(L.el);
+  L.line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+  L.line.setAttribute('stroke', 'rgba(143,233,255,0.9)'); L.line.setAttribute('stroke-width', '2.5');
+  L.dot = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+  L.dot.setAttribute('r', '8'); L.dot.setAttribute('fill', '#8fe9ff');
+  L.ring = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+  L.ring.setAttribute('fill', 'none'); L.ring.setAttribute('stroke', 'rgba(143,233,255,0.8)'); L.ring.setAttribute('stroke-width', '2');
+  svg.append(L.line, L.ring, L.dot);
+});
+const proj = (v) => { const p = v.clone().project(cam); return [(p.x * 0.5 + 0.5) * W, (-p.y * 0.5 + 0.5) * H, p.z]; };
+function updateLabels(t) {
+  for (const L of LABELS) {
+    const a = ss(L.t0, L.t0 + 0.3, t) * (1 - ss(L.t1 - 0.25, L.t1, t));
+    const vis = a > 0.001;
+    L.el.style.display = vis ? 'block' : 'none';
+    [L.line, L.dot, L.ring].forEach((e) => e.style.display = vis ? '' : 'none');
+    if (!vis) continue;
+    const anchor = L.hero != null ? S.heroes[L.hero].mesh.position : S.anchors[L.anchor];
+    const [x, y] = proj(anchor);
+    const g = ss(L.t0, L.t0 + 0.28, t);
+    const lx = x + L.dx * g, ly = y + L.dy * g;
+    L.line.setAttribute('x1', x); L.line.setAttribute('y1', y); L.line.setAttribute('x2', lx); L.line.setAttribute('y2', ly);
+    L.line.style.opacity = a; L.dot.setAttribute('cx', x); L.dot.setAttribute('cy', y); L.dot.style.opacity = a;
+    const pr = (t - L.t0) % 1.2;
+    L.ring.setAttribute('cx', x); L.ring.setAttribute('cy', y); L.ring.setAttribute('r', 10 + pr * 30); L.ring.style.opacity = a * (1 - pr / 1.2);
+    const bw = L.el.offsetWidth, bh = L.el.offsetHeight;
+    let left = L.dx < 0 ? lx - bw : lx, top = ly - bh / 2;
+    left = Math.max(56, Math.min(W - 56 - bw, left)); top = Math.max(170, Math.min(1180 - bh, top));
+    const ax = L.dx < 0 ? left + bw : left, ay = top + bh / 2;
+    L.line.setAttribute('x2', ax); L.line.setAttribute('y2', ay);
+    L.el.style.left = left + 'px'; L.el.style.top = top + 'px';
+    L.el.style.opacity = ss(L.t0 + 0.15, L.t0 + 0.4, t) * (1 - ss(L.t1 - 0.25, L.t1, t));
+  }
+}
+
+const titleEl = document.getElementById('title');
+const tlEl = document.getElementById('tl');
+const hudEl = document.getElementById('hud');
+const endEl = document.getElementById('end');
+const dotsEl = tlEl.querySelector('.dots');
+for (let i = 0; i < 12; i++) dotsEl.appendChild(document.createElement('i'));
+function updateOverlay(t, st) {
+  updateCaptions(t);
+  updateLabels(t);
+  // title
+  const ta = ss(6.95, 7.35, t) * (1 - ss(8.45, 8.75, t));
+  titleEl.style.opacity = ta;
+  titleEl.querySelector('.big').style.letterSpacing = (0.14 - 0.08 * easeOut(clamp01((t - 6.95) / 1.6))).toFixed(3) + 'em';
+  titleEl.querySelector('.rule').style.width = (420 * easeOut(clamp01((t - 7.1) / 0.6))).toFixed(0) + 'px';
+  // time-lapse counter
+  const tla = ss(25.95, 26.2, t) * (1 - ss(28.2, 28.42, t));
+  tlEl.style.opacity = tla;
+  const wk = Math.max(1, Math.min(12, 1 + Math.floor(11 * clamp01((t - 26.0) / 2.3))));
+  tlEl.querySelector('.v').textContent = 'WEEK ' + wk;
+  dotsEl.querySelectorAll('i').forEach((d, i) => d.classList.toggle('on', i < wk));
+  // pressure HUD
+  const ha = (ss(28.55, 28.9, t) * (1 - ss(36.6, 36.85, t))) + ss(44.4, 44.8, t) * (1 - ss(45.95, 46.15, t));
+  hudEl.style.opacity = ha;
+  if (ha > 0) {
+    const dp = st.p1 - st.p2;
+    document.getElementById('p1').textContent = st.p1.toFixed(1) + ' bar';
+    document.getElementById('p2').textContent = st.p2.toFixed(1) + ' bar';
+    const dpEl = document.getElementById('dp');
+    dpEl.textContent = dp.toFixed(1) + ' bar';
+    const danger = clamp01((dp - 0.5) / 1.8);
+    const col = danger < 0.35 ? 'var(--green)' : danger < 0.75 ? 'var(--amber)' : 'var(--red)';
+    dpEl.style.color = col;
+    const fl = Math.round(st.flow * 100);
+    document.getElementById('flowv').textContent = fl + '%';
+    const fb = document.getElementById('flowbar'); fb.style.width = fl + '%'; fb.style.background = col;
+  }
+  // end card
+  const ea = ss(46.35, 46.9, t);
+  endEl.style.opacity = ea;
+  endEl.style.transform = `translateY(${((1 - easeOut(clamp01((t - 46.35) / 0.9))) * 30).toFixed(1)}px)`;
+  endEl.querySelector('.tag').style.opacity = ss(47.25, 47.6, t);
+}
+
+// ---------------------------------------------------------------- frame
+window.renderFrame = (t) => {
+  const { shot, p } = placeCamera(t);
+  let cut = null;
+  if (shot.closeCut) cut = 1 - ss(46.4, 47.9, t);
+  const st = S.update(t, { cut, camPos: cam.position });
+  // lights per shot
+  S.lights.headlamp.intensity = shot.headlamp || 0;
+  S.lights.headlamp.position.copy(cam.position).add(new V3(0, 0.2, 0));
+  const key = S.lights.key;
+  if (shot.id === 'S2') {
+    const u = ease(p);
+    key.position.set(-18 + 9 * u, 13, 6 + 10 * u);
+  } else key.position.set(-9, 13, 16);
+  // exposure / fades
+  let exp = 1.0, fade = 1;
+  if (t < 0.7) fade = ss(0.0, 0.7, t);
+  if (shot.id === 'S2') exp = 0.35 + 0.65 * ss(4.55, 5.4, t);
+  if (t > 49.05) fade = 1 - ss(49.05, 49.85, t);
+  renderer.toneMappingExposure = exp;
+  grade.uniforms.uFade.value = fade;
+  grade.uniforms.uWarn.value = st.warn;
+  grade.uniforms.uTime.value = t;
+  grade.uniforms.uFlash.value = 0.06 * Math.exp(-Math.max(0, t - T.heroImpact[0]) / 0.06) * (t >= T.heroImpact[0] ? 1 : 0) + 0.05 * (t >= 39.32 ? Math.exp(-(t - 39.32) / 0.12) : 0);
+  bloom.strength = 0.42 + 0.12 * st.valve;
+  comp.render();
+  updateOverlay(t, st);
+  document.getElementById('ov').style.opacity = fade;
+  return { shot: shot.id };
+};
+window.ready = true;
+</script></body></html>
