@@ -1,0 +1,162 @@
+[
+ {
+  "id": 1,
+  "text": "Compressed air is one of the most expensive utilities in the plant. Most of the electricity that goes in comes out as heat.",
+  "pause": 0.5
+ },
+ {
+  "id": 2,
+  "text": "Here's how a screw compressor works, and how to keep it efficient.",
+  "pause": 0.7
+ },
+ {
+  "id": 3,
+  "text": "The screw air compressor.",
+  "pause": 1.0
+ },
+ {
+  "id": 4,
+  "text": "Inside the air end, two rotors mesh: a male rotor with four lobes, and a female rotor with six flutes.",
+  "pause": 0.45
+ },
+ {
+  "id": 5,
+  "text": "The motor drives the male rotor, and it turns the female rotor on a thin film of oil, with no metal contact between them.",
+  "pause": 0.45
+ },
+ {
+  "id": 6,
+  "text": "Air is drawn in through a filter and an inlet valve, and trapped in the pockets between the lobes.",
+  "pause": 0.45
+ },
+ {
+  "id": 7,
+  "text": "As the rotors turn, each pocket moves along and shrinks, until it opens to the outlet at full pressure, typically seven to ten bar.",
+  "pause": 0.5
+ },
+ {
+  "id": 8,
+  "text": "Squeezing air makes it hot. Without help, it would leave at well over two hundred degrees.",
+  "pause": 0.45
+ },
+ {
+  "id": 9,
+  "text": "So oil is injected straight into the compression chamber. It seals the gaps between the rotors, lubricates the bearings, and soaks up the heat.",
+  "pause": 0.45
+ },
+ {
+  "id": 10,
+  "text": "Oil and air leave together, at around eighty to ninety degrees, into the separator tank.",
+  "pause": 0.45
+ },
+ {
+  "id": 11,
+  "text": "There, the mixture spins, and most of the oil drops out. A fine separator element catches the remaining mist.",
+  "pause": 0.45
+ },
+ {
+  "id": 12,
+  "text": "A minimum pressure valve holds pressure in the tank, so the oil keeps circulating, and the air moves on to the aftercooler.",
+  "pause": 0.45
+ },
+ {
+  "id": 13,
+  "text": "The oil flows back through a cooler, a thermostatic valve and a filter. The thermostat keeps the oil warm enough that water never condenses in it.",
+  "pause": 0.45
+ },
+ {
+  "id": 14,
+  "text": "The aftercooler cools the air, and the water that condenses out is drained away, before the dryer and filters downstream.",
+  "pause": 0.5
+ },
+ {
+  "id": 15,
+  "text": "About ninety percent of the power that goes in comes out as heat. And every extra bar of pressure costs roughly seven percent more energy.",
+  "pause": 0.7
+ },
+ {
+  "id": 16,
+  "text": "And that's where the money leaks.",
+  "pause": 0.45
+ },
+ {
+  "id": 17,
+  "text": "A clogged intake filter starves the air end, so output falls.",
+  "pause": 0.45
+ },
+ {
+  "id": 18,
+  "text": "Dirty coolers can't shed the heat. The discharge temperature climbs, until the machine trips.",
+  "pause": 0.45
+ },
+ {
+  "id": 19,
+  "text": "Old oil breaks down and leaves varnish. A tired separator lets oil carry over into the air lines, and clogs, so the pressure drop across it rises.",
+  "pause": 0.45
+ },
+ {
+  "id": 20,
+  "text": "A stuck thermostat lets the oil run cold and fill with water, or run hot and cook.",
+  "pause": 0.45
+ },
+ {
+  "id": 21,
+  "text": "And leaks in the air network, often a fifth or more of everything the compressor makes, keep it running for air nobody uses.",
+  "pause": 0.7
+ },
+ {
+  "id": 22,
+  "text": "Warning signs: a discharge temperature above its normal band.",
+  "pause": 0.4
+ },
+ {
+  "id": 23,
+  "text": "A rising pressure drop across the separator or the filters.",
+  "pause": 0.4
+ },
+ {
+  "id": 24,
+  "text": "Oil in the condensate, or downstream, and oil consumption going up.",
+  "pause": 0.4
+ },
+ {
+  "id": 25,
+  "text": "And the compressor loading more, while production hasn't changed.",
+  "pause": 0.7
+ },
+ {
+  "id": 26,
+  "text": "So: check temperatures, pressures and drains every day.",
+  "pause": 0.45
+ },
+ {
+  "id": 27,
+  "text": "Change the intake and oil filters on running hours, or on pressure drop.",
+  "pause": 0.45
+ },
+ {
+  "id": 28,
+  "text": "Change the oil and the separator on schedule, and use oil analysis to set the interval.",
+  "pause": 0.45
+ },
+ {
+  "id": 29,
+  "text": "Clean the coolers, and keep the compressor room cool and well ventilated.",
+  "pause": 0.45
+ },
+ {
+  "id": 30,
+  "text": "Check that the inlet valve unloads cleanly when demand drops, and that belts or couplings are in good shape.",
+  "pause": 0.45
+ },
+ {
+  "id": 31,
+  "text": "And hunt leaks with an ultrasonic detector, and set the pressure no higher than you really need.",
+  "pause": 0.7
+ },
+ {
+  "id": 32,
+  "text": "Less pressure. Less power.",
+  "pause": 0.5
+ }
+]

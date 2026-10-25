@@ -1,0 +1,432 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<style>
+@font-face { font-family: 'Inter'; font-weight: 600; src: url(/node_modules/@fontsource/inter/files/inter-latin-600-normal.woff2) format('woff2'); }
+@font-face { font-family: 'Inter'; font-weight: 800; src: url(/node_modules/@fontsource/inter/files/inter-latin-800-normal.woff2) format('woff2'); }
+@font-face { font-family: 'Space Grotesk'; font-weight: 500; src: url(/node_modules/@fontsource/space-grotesk/files/space-grotesk-latin-500-normal.woff2) format('woff2'); }
+@font-face { font-family: 'Space Grotesk'; font-weight: 700; src: url(/node_modules/@fontsource/space-grotesk/files/space-grotesk-latin-700-normal.woff2) format('woff2'); }
+@font-face { font-family: 'JetBrains Mono'; font-weight: 500; src: url(/node_modules/@fontsource/jetbrains-mono/files/jetbrains-mono-latin-500-normal.woff2) format('woff2'); }
+@font-face { font-family: 'JetBrains Mono'; font-weight: 700; src: url(/node_modules/@fontsource/jetbrains-mono/files/jetbrains-mono-latin-700-normal.woff2) format('woff2'); }
+:root { --cyan: #8fe9ff; --amber: #ffb35c; --red: #ff5a4e; --green: #6ff0b0; }
+html, body { margin: 0; background: #000; overflow: hidden; }
+#stage { position: relative; width: 1920px; height: 1080px; }
+canvas { position: absolute; inset: 0; }
+#ov { position: absolute; inset: 0; pointer-events: none; color: #fff; }
+#cap { position: absolute; left: 320px; right: 320px; bottom: 64px; text-align: center; font: 800 46px/1.22 'Inter', sans-serif; letter-spacing: -0.005em;
+  text-shadow: 0 3px 14px rgba(0,0,0,0.75), 0 0 2px rgba(0,0,0,0.9); }
+#cap .w { opacity: 0.0; display: inline-block; margin: 0 0.12em; transform: translateY(10px); }
+#cap .w.cur { color: var(--cyan); text-shadow: 0 0 22px rgba(120,220,255,0.55), 0 3px 14px rgba(0,0,0,0.8); }
+#title { position: absolute; left: 0; right: 0; top: 330px; text-align: center; opacity: 0; }
+#title .big { font: 700 124px/1.02 'Space Grotesk', sans-serif; letter-spacing: 0.06em; color: #f4f6f8; text-shadow: 0 6px 40px rgba(0,0,0,0.6); padding: 0 40px; }
+#title .rule { width: 0px; height: 3px; background: var(--cyan); margin: 34px auto 26px; box-shadow: 0 0 18px rgba(120,220,255,0.7); }
+#title .sub { font: 500 32px/1.3 'JetBrains Mono', monospace; letter-spacing: 0.3em; color: #b9c7d3; text-transform: uppercase; }
+#chap { position: absolute; left: 60px; top: 40px; display: flex; justify-content: flex-start; opacity: 0; }
+#chap .pill { display: flex; align-items: center; gap: 16px; padding: 11px 18px; border-radius: 999px; background: rgba(8,14,20,0.55); border: 1.5px solid rgba(255,255,255,0.14); backdrop-filter: blur(6px); }
+#chap .lbl { font: 700 20px/1 'JetBrains Mono', monospace; letter-spacing: 0.22em; }
+#chap .dots { display: flex; gap: 8px; }
+#chap .dots i { width: 22px; height: 5px; border-radius: 3px; background: rgba(255,255,255,0.18); }
+#chap .dots i.on { background: currentColor; }
+#labels { position: absolute; inset: 0; }
+svg#lines { position: absolute; inset: 0; width: 1920px; height: 1080px; overflow: visible; }
+.lab { position: absolute; font: 700 25px/1 'JetBrains Mono', monospace; letter-spacing: 0.12em; color: #fff; padding: 10px 13px 9px; white-space: nowrap;
+  background: rgba(8,14,20,0.62); border: 1.5px solid rgba(143,233,255,0.75); border-radius: 6px; backdrop-filter: blur(6px); }
+.lab.warn { border-color: rgba(255,179,92,0.85); }
+.lab.bad { border-color: rgba(255,90,78,0.9); }
+.lab small { display: block; font: 500 17px/1.2 'JetBrains Mono', monospace; letter-spacing: 0.1em; color: #a9bccb; margin-top: 7px; }
+#hud { position: absolute; right: 60px; top: 120px; width: 500px; opacity: 0; font-family: 'JetBrains Mono', monospace; padding: 22px 26px 24px; border-radius: 14px; background: rgba(8,14,20,0.66); border: 1.5px solid rgba(255,255,255,0.14); backdrop-filter: blur(8px); box-sizing: border-box; }
+#hud .row { display: flex; flex-direction: column; gap: 14px; } #hud .row.b { flex-direction: row; justify-content: space-between; }
+#hud .it { display: flex; justify-content: space-between; align-items: baseline; gap: 18px; min-width: 0; text-align: left !important; }
+#hud .k { font: 500 19px/1.2 'JetBrains Mono', monospace; letter-spacing: 0.16em; color: #a9bccb; white-space: nowrap; }
+#hud .v { font: 700 32px/1.1 'JetBrains Mono', monospace; color: #fff; white-space: nowrap; }
+#hud .big .v { font-size: 50px; } #hud .ttl { font: 700 19px/1 'JetBrains Mono', monospace; letter-spacing: 0.2em; color: #8fe9ff; margin-bottom: 16px; }
+#hud .bar { height: 5px; background: rgba(255,255,255,0.12); border-radius: 3px; margin-top: 18px; overflow: hidden; }
+#hud .bar i { display: block; height: 100%; width: 10%; background: var(--green); border-radius: 3px; }
+#tl { position: absolute; left: 0; right: 0; top: 130px; text-align: center; opacity: 0; }
+#tl .k { font: 500 26px/1 'JetBrains Mono', monospace; letter-spacing: 0.4em; color: var(--amber); }
+#tl .v { font: 700 72px/1.1 'Space Grotesk', sans-serif; color: #fff; margin-top: 14px; letter-spacing: 0.02em; }
+#tl .dots { display: flex; gap: 10px; justify-content: center; margin-top: 18px; }
+#tl .dots i { width: 34px; height: 6px; border-radius: 3px; background: rgba(255,255,255,0.15); }
+#tl .dots i.on { background: var(--amber); box-shadow: 0 0 12px rgba(255,180,90,0.6); }
+#card { position: absolute; left: 60px; top: 120px; width: 600px; box-sizing: border-box; opacity: 0; padding: 22px 26px 24px; border-radius: 14px; background: rgba(8,14,20,0.66); border: 1.5px solid rgba(255,255,255,0.14); backdrop-filter: blur(8px); }
+#card .h { font: 700 20px/1 'JetBrains Mono', monospace; letter-spacing: 0.22em; margin-bottom: 20px; }
+#card ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 13px; } #card li small { display: block; font: 500 18px/1.3 'Inter', sans-serif; color: #a9bccb; margin-top: 3px; }
+#card li { display: flex; align-items: center; gap: 14px; font: 700 27px/1.2 'Inter', sans-serif; opacity: 0; transform: translateX(-14px); }
+#card li .ic { flex: none; width: 36px; height: 36px; border-radius: 8px; display: grid; place-items: center; font: 700 20px/1 'JetBrains Mono', monospace; }
+#card.warn .h { color: var(--amber); } #card.warn .ic { background: rgba(255,179,92,0.16); color: var(--amber); border: 1.5px solid rgba(255,179,92,0.6); }
+#card.fix .h { color: var(--green); } #card.fix .ic { background: rgba(111,240,176,0.14); color: var(--green); border: 1.5px solid rgba(111,240,176,0.6); }
+#card li.done .ic { background: var(--green); color: #06110c; }
+#end { position: absolute; left: 0; right: 0; top: 300px; text-align: center; opacity: 0; }
+#end .big { font: 700 112px/1.02 'Space Grotesk', sans-serif; letter-spacing: 0.06em; padding: 0 40px; }
+#end .rule { width: 260px; height: 3px; background: var(--cyan); margin: 34px auto 30px; box-shadow: 0 0 18px rgba(120,220,255,0.7); }
+#end .tag { font: 800 58px/1.15 'Inter', sans-serif; }
+#end .tag em { font-style: normal; color: var(--cyan); }
+#end .series { font: 500 26px/1 'JetBrains Mono', monospace; letter-spacing: 0.3em; color: #9fb0bd; margin-top: 40px; }
+#panel { position: absolute; top: 120px; width: 600px; box-sizing: border-box; opacity: 0; padding: 22px 26px 24px; border-radius: 14px; background: rgba(8,14,20,0.70); border: 1.5px solid rgba(255,255,255,0.14); backdrop-filter: blur(8px); color: #e8eef3; }
+#panel .h { font: 700 20px/1 'JetBrains Mono', monospace; letter-spacing: 0.22em; color: #8fe9ff; margin-bottom: 16px; }
+#panel .tb { display: grid; grid-template-columns: auto auto; gap: 9px 20px; font: 500 22px/1.25 'Inter', sans-serif; }
+#panel .tb b { font: 700 22px/1.25 'JetBrains Mono', monospace; color: #fff; text-align: right; white-space: nowrap; }
+#panel .tb .dim { color: #a9bccb; }
+#panel .note { font: 500 18px/1.4 'Inter', sans-serif; color: #a9bccb; margin-top: 14px; }
+#panel svg text { font-family: 'JetBrains Mono', monospace; }
+#chapcard { position: absolute; left: 60px; bottom: 170px; opacity: 0; }
+#chapcard .n { font: 700 22px/1 'JetBrains Mono', monospace; letter-spacing: 0.3em; }
+#chapcard .t { font: 700 78px/1.05 'Space Grotesk', sans-serif; letter-spacing: 0.04em; color: #fff; margin-top: 10px; text-shadow: 0 4px 30px rgba(0,0,0,0.6); }
+#chapcard .s { font: 500 24px/1.3 'Inter', sans-serif; color: #c3d0da; margin-top: 10px; max-width: 900px; }
+#chapcard .r { width: 0; height: 3px; margin-top: 16px; }
+#prog { position: absolute; left: 0; right: 0; top: 0; height: 5px; background: rgba(255,255,255,0.08); opacity: 0; }
+#prog i { position: absolute; top: 0; bottom: 0; left: 0; }
+#prog b { position: absolute; top: 0; width: 2px; height: 5px; background: rgba(0,0,0,0.7); }
+</style></head>
+<body>
+<div id="stage">
+  <div id="ov">
+    <div id="chap"><div class="pill"><span class="lbl">HOW IT WORKS</span><span class="dots"><i></i><i></i><i></i><i></i></span></div></div>
+    <div id="title"><div class="big"></div><div class="rule"></div><div class="sub"></div></div>
+    <div id="tl"><div class="k">TIME-LAPSE</div><div class="v"></div><div class="dots"></div></div>
+    <div id="hud"></div>
+    <div id="card"><div class="h"></div><ul></ul></div>
+    <div id="panel"></div>
+    <div id="chapcard"><div class="n"></div><div class="t"></div><div class="s"></div><div class="r"></div></div>
+    <div id="prog"><i></i></div>
+    <div id="labels"><svg id="lines"></svg></div>
+    <div id="end"><div class="big"></div><div class="rule"></div><div class="tag"></div><div class="series">HOW IT WORKS · MAINTENANCE</div></div>
+    <div id="cap"></div>
+  </div>
+</div>
+<script type="importmap">{"imports":{"three":"/node_modules/three/build/three.module.js","three/addons/":"/node_modules/three/examples/jsm/","series/look":"/series/shell/look.js","series/inj":"/series/shell/injection.js","series/mould":"/series/shell/mould.js","three-bvh-csg":"/node_modules/three-bvh-csg/build/index.module.js","three-mesh-bvh":"/node_modules/three-mesh-bvh/build/index.module.js"}}</script>
+<script type="module">
+import * as THREE from 'three';
+import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
+import { SMAAPass } from 'three/addons/postprocessing/SMAAPass.js';
+import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
+
+const q = new URLSearchParams(location.search);
+const TOPIC = q.get('topic');
+const BASE = `/series/topics/${TOPIC}/`;
+const SCALE = +(q.get('scale') || 1), RS = +(q.get('rscale') || 1);
+const W = 1920, H = 1080, RW = Math.round(W * SCALE * RS), RH = Math.round(H * SCALE * RS);
+document.querySelector('#stage').style.transform = `scale(${SCALE})`;
+document.querySelector('#stage').style.transformOrigin = '0 0';
+await Promise.all(['800 66px Inter', '600 30px Inter', '700 40px "Space Grotesk"', '700 30px "JetBrains Mono"', '500 30px "JetBrains Mono"'].map((f) => document.fonts.load(f)));
+await document.fonts.ready;
+
+const SceneMod = await import(BASE + 'scene.js');
+const DIR = await import(BASE + 'director.js');
+const timeline = await (await fetch(BASE + 'timeline.json')).json();
+
+const renderer = new THREE.WebGLRenderer({ antialias: false, preserveDrawingBuffer: true });
+renderer.setPixelRatio(1); renderer.setSize(W, H);
+renderer.domElement.style.width = W + 'px'; renderer.domElement.style.height = H + 'px';
+renderer.setSize(RW, RH, false);
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.shadowMap.enabled = true; renderer.shadowMap.type = q.get('soft') ? THREE.PCFSoftShadowMap : THREE.PCFShadowMap;
+document.querySelector('#stage').prepend(renderer.domElement);
+
+const S = await SceneMod.build(renderer, { fontFamily: 'Inter', quality: 'high' });
+if (!q.get('fullenv')) S.stage.finalizeEnv(true);
+const cam = new THREE.PerspectiveCamera(40, W / H, 0.03, 400);
+const rt = new THREE.WebGLRenderTarget(RW, RH, { type: THREE.HalfFloatType });
+const comp = new EffectComposer(renderer, rt);
+comp.addPass(new RenderPass(S.scene, cam));
+const bloom = new UnrealBloomPass(new THREE.Vector2(RW, RH), 0.42, 0.55, 0.97);
+comp.addPass(bloom);
+comp.addPass(new OutputPass());
+comp.addPass(new SMAAPass(RW, RH));
+const grade = new ShaderPass({
+  uniforms: { tDiffuse: { value: null }, uTime: { value: 0 }, uVig: { value: 0.75 }, uGrain: { value: 0.045 }, uWarn: { value: 0 }, uCA: { value: 0.006 }, uFade: { value: 1 }, uFlash: { value: 0 } },
+  vertexShader: `varying vec2 vUv; void main(){ vUv = uv; gl_Position = projectionMatrix*modelViewMatrix*vec4(position,1.0); }`,
+  fragmentShader: `
+    uniform sampler2D tDiffuse; uniform float uTime, uVig, uGrain, uWarn, uCA, uFade, uFlash; varying vec2 vUv;
+    void main(){
+      vec2 c = vUv - 0.5;
+      float ca = uCA * dot(c, c) * 4.0;
+      vec3 col = vec3(texture2D(tDiffuse, vUv - c*ca).r, texture2D(tDiffuse, vUv).g, texture2D(tDiffuse, vUv + c*ca).b);
+      float l = dot(col, vec3(0.2126, 0.7152, 0.0722));
+      col = mix(col, col * vec3(0.9, 1.0, 1.1), (1.0 - l) * 0.4);
+      col = mix(col, col * vec3(1.06, 1.0, 0.93), clamp(l, 0.0, 1.0) * 0.3);
+      vec3 warnCol = mix(vec3(l), col, 0.55) * vec3(1.22, 0.8, 0.74);
+      col = mix(col, warnCol, uWarn * 0.6);
+      vec2 vc = c * vec2(1.0, 0.5625) * 1.45;
+      col *= mix(1.0, smoothstep(0.92, 0.18, length(vc)), uVig);
+      float n = fract(sin(dot(vUv * vec2(1920.0, 1080.0) + fract(uTime * 13.17) * 97.0, vec2(12.9898, 78.233))) * 43758.5453);
+      col += (n - 0.5) * uGrain;
+      col += uFlash;
+      gl_FragColor = vec4(col * uFade, 1.0);
+    }`,
+});
+comp.addPass(grade);
+
+const V3 = THREE.Vector3;
+const clamp01 = (x) => Math.min(1, Math.max(0, x));
+const ss = (a, b, x) => { const t = clamp01((x - a) / (b - a)); return t * t * (3 - 2 * t); };
+const ease = (x) => x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
+const easeOut = (x) => 1 - Math.pow(1 - x, 3);
+const EZ = { lin: (x) => x, ease, out: easeOut };
+
+// ---------------------------------------------------------------- camera
+const SH = DIR.SHOTS;
+SH.forEach((s) => {
+  if (!s.keys) return;
+  s.posC = new THREE.CatmullRomCurve3(s.keys.map((k) => new V3(...k[1])));
+  s.tgtC = new THREE.CatmullRomCurve3(s.keys.map((k) => new V3(...k[2])));
+});
+function keyU(s, p) {
+  const ks = s.keys, n = ks.length;
+  if (n === 2) return p;
+  for (let i = 0; i < n - 1; i++) if (p <= ks[i + 1][0]) return (i + (p - ks[i][0]) / (ks[i + 1][0] - ks[i][0])) / (n - 1);
+  return 1;
+}
+const noise1 = (t, k) => Math.sin(t * 1.7 + k) * 0.5 + Math.sin(t * 3.1 + k * 2.3) * 0.3 + Math.sin(t * 7.3 + k * 4.1) * 0.2;
+function placeCamera(t) {
+  const s = SH.find((x) => t >= x.t0 && t < x.t1) || SH[SH.length - 1];
+  const p = clamp01((t - s.t0) / (s.t1 - s.t0));
+  const pe = (typeof s.ez === 'function' ? s.ez : EZ[s.ez || 'ease'])(p);
+  let pos, tgt, fov, roll = s.roll || 0;
+  if (s.cam) { const r = s.cam(t, p, S); pos = Array.isArray(r.pos) ? new V3(...r.pos) : r.pos; tgt = Array.isArray(r.tgt) ? new V3(...r.tgt) : r.tgt; fov = r.fov; roll = r.roll || 0; }
+  else {
+    const u = keyU(s, pe);
+    pos = s.posC.getPoint(u); tgt = s.tgtC.getPoint(u);
+    const ks = s.keys; fov = ks[0][3] + (ks[ks.length - 1][3] - ks[0][3]) * pe;
+  }
+  const hd = s.hand ?? 0.006;
+  pos.add(new V3(noise1(t, 1), noise1(t, 2), noise1(t, 3)).multiplyScalar(hd * pos.distanceTo(tgt) * 0.4));
+  let sh = 0;
+  for (const k of (DIR.SHAKES || [])) if (t >= k.t && t < k.t + k.d * 4) sh += k.a * Math.exp(-(t - k.t) / k.d);
+  if (sh > 0) {
+    const f = 38, d = pos.distanceTo(tgt);
+    pos.add(new V3(Math.sin(t * f * 1.3), Math.sin(t * f * 1.7 + 1), 0).multiplyScalar(sh * d * 0.05));
+    tgt.add(new V3(Math.sin(t * f * 1.1 + 2), Math.sin(t * f * 0.9 + 3), 0).multiplyScalar(sh * d * 0.04));
+  }
+  cam.position.copy(pos); cam.fov = fov; cam.up.set(Math.sin(roll), Math.cos(roll), 0);
+  cam.lookAt(tgt); cam.updateProjectionMatrix();
+  return { shot: s, p };
+}
+
+// ---------------------------------------------------------------- captions
+const capEl = document.getElementById('cap');
+const skip = new Set(DIR.CAPTION_SKIP || [timeline.lines[timeline.lines.length - 1].id]);
+const CHUNKS = [];
+for (const line of timeline.lines) {
+  if (skip.has(line.id)) continue;
+  let cur = [];
+  const flush = () => { if (cur.length) { CHUNKS.push({ words: cur, line }); cur = []; } };
+  line.words.forEach((w, i) => { cur.push(w); const left = line.words.length - 1 - i; if ((/[.;:!?]$/.test(w.w) && cur.length >= 3) || (/,$/.test(w.w) && cur.length >= 5) || (cur.length >= 8 && left > 2) || cur.length >= 11) flush(); });
+  flush();
+}
+CHUNKS.forEach((c, i) => { c.t0 = c.words[0].s - 0.04; const n = CHUNKS[i + 1]; c.t1 = (n && n.line === c.line) ? n.words[0].s - 0.04 : c.line.end + 0.35; });
+let capKey = null;
+function updateCaptions(t) {
+  const c = CHUNKS.find((x) => t >= x.t0 && t < x.t1);
+  const key = c ? CHUNKS.indexOf(c) : -1;
+  if (key !== capKey) { capEl.innerHTML = c ? c.words.map((w) => `<span class="w">${w.w}</span>`).join(' ') : ''; capKey = key; }
+  if (!c) return;
+  const spans = capEl.querySelectorAll('.w');
+  c.words.forEach((w, i) => {
+    const a = clamp01((t - (w.s - 0.05)) / 0.09);
+    spans[i].style.opacity = t >= w.s - 0.05 ? (0.35 + 0.65 * a).toFixed(3) : '0';
+    spans[i].style.transform = `translateY(${((1 - a) * 10).toFixed(1)}px)`;
+    spans[i].classList.toggle('cur', t >= w.s - 0.05 && t < w.e + 0.02);
+  });
+}
+
+// ---------------------------------------------------------------- labels
+const labelsEl = document.getElementById('labels'), svg = document.getElementById('lines');
+const LABELS = DIR.LABELS || [];
+LABELS.forEach((L) => {
+  L.el = document.createElement('div'); L.el.className = 'lab' + (L.tone ? ' ' + L.tone : '');
+  L.el.innerHTML = L.text + (L.sub ? `<small>${L.sub}</small>` : '');
+  labelsEl.appendChild(L.el);
+  const col = L.tone === 'warn' ? 'rgba(255,179,92,0.95)' : L.tone === 'bad' ? 'rgba(255,90,78,0.95)' : 'rgba(143,233,255,0.9)';
+  L.line = document.createElementNS('http://www.w3.org/2000/svg', 'line'); L.line.setAttribute('stroke', col); L.line.setAttribute('stroke-width', '2.5');
+  L.dot = document.createElementNS('http://www.w3.org/2000/svg', 'circle'); L.dot.setAttribute('r', '8'); L.dot.setAttribute('fill', col);
+  L.ring = document.createElementNS('http://www.w3.org/2000/svg', 'circle'); L.ring.setAttribute('fill', 'none'); L.ring.setAttribute('stroke', col); L.ring.setAttribute('stroke-width', '2');
+  svg.append(L.line, L.ring, L.dot);
+});
+const proj = (v) => { const p = v.clone().project(cam); return [(p.x * 0.5 + 0.5) * W, (-p.y * 0.5 + 0.5) * H]; };
+function anchorOf(L, t) {
+  if (typeof L.anchor === 'function') return L.anchor(S, t);
+  if (Array.isArray(L.anchor)) return new V3(...L.anchor);
+  return S.anchors[L.anchor];
+}
+function updateLabels(t) {
+  for (const L of LABELS) {
+    const a = ss(L.t0, L.t0 + 0.3, t) * (1 - ss(L.t1 - 0.25, L.t1, t));
+    const vis = a > 0.001;
+    L.el.style.display = vis ? 'block' : 'none';
+    [L.line, L.dot, L.ring].forEach((e) => (e.style.display = vis ? '' : 'none'));
+    if (!vis) continue;
+    const [x, y] = proj(anchorOf(L, t));
+    const g = ss(L.t0, L.t0 + 0.28, t);
+    const lx = x + L.dx * g, ly = y + L.dy * g;
+    L.line.setAttribute('x1', x); L.line.setAttribute('y1', y);
+    L.line.style.opacity = a; L.dot.setAttribute('cx', x); L.dot.setAttribute('cy', y); L.dot.style.opacity = a;
+    const pr = (t - L.t0) % 1.2;
+    L.ring.setAttribute('cx', x); L.ring.setAttribute('cy', y); L.ring.setAttribute('r', 10 + pr * 30); L.ring.style.opacity = a * (1 - pr / 1.2);
+    const bw = L.el.offsetWidth, bh = L.el.offsetHeight;
+    let left = L.dx < 0 ? lx - bw : lx, top = ly - bh / 2;
+    const minL = leftEdge + 24, maxR = rightEdge - 24;
+    left = Math.max(minL, Math.min(maxR - bw, left)); top = Math.max(96, Math.min(880 - bh, top));
+    L.line.setAttribute('x2', L.dx < 0 ? left + bw : left); L.line.setAttribute('y2', top + bh / 2);
+    L.el.style.left = left + 'px'; L.el.style.top = top + 'px';
+    L.el.style.opacity = ss(L.t0 + 0.15, L.t0 + 0.4, t) * (1 - ss(L.t1 - 0.25, L.t1, t));
+  }
+}
+
+// ---------------------------------------------------------------- title / chapter / hud / counter / card / end
+const titleEl = document.getElementById('title'), endEl = document.getElementById('end'), chapEl = document.getElementById('chap');
+const TITLE = DIR.TITLE, END = DIR.END;
+titleEl.querySelector('.big').textContent = TITLE.big; titleEl.querySelector('.sub').textContent = TITLE.sub;
+endEl.querySelector('.big').textContent = END.big; endEl.querySelector('.tag').innerHTML = `${END.a} <em>${END.b}</em>`;
+const CH = DIR.CHAPTERS || [];
+const CH_COL = { 'HOW IT WORKS': '#8fe9ff', 'WHAT GOES WRONG': '#ff8f7a', 'WARNING SIGNS': '#ffb35c', 'THE FIX': '#6ff0b0' };
+const hudEl = document.getElementById('hud'), tlEl = document.getElementById('tl'), cardEl = document.getElementById('card');
+let hudKey = '', cardKey = '';
+let cardVisible = false, cardBottom = 0, hudVisible = false, hudBottom = 0, leftEdge = 32, rightEdge = W - 32;
+const panelEl = document.getElementById('panel'), chapcardEl = document.getElementById('chapcard'), progEl = document.getElementById('prog');
+let panelKey = '';
+function updateOverlay(t, st) {
+  updateCaptions(t);
+  const ta = ss(TITLE.t0, TITLE.t0 + 0.4, t) * (1 - ss(TITLE.t1 - 0.3, TITLE.t1, t));
+  titleEl.style.opacity = ta;
+  titleEl.querySelector('.big').style.letterSpacing = (0.12 - 0.06 * easeOut(clamp01((t - TITLE.t0) / 1.6))).toFixed(3) + 'em';
+  titleEl.querySelector('.rule').style.width = (420 * easeOut(clamp01((t - TITLE.t0 - 0.15) / 0.6))).toFixed(0) + 'px';
+  // chapter pill
+  let ci = -1; CH.forEach((c, i) => { if (t >= c.t) ci = i; });
+  const chOn = ci >= 0 && t < (DIR.CHAPTER_END ?? END.t0 - 0.2);
+  chapEl.style.opacity = chOn ? ss(CH[ci].t, CH[ci].t + 0.3, t) * (1 - ss((DIR.CHAPTER_END ?? END.t0) - 0.5, (DIR.CHAPTER_END ?? END.t0) - 0.2, t)) * (DIR.chapterVisible ? DIR.chapterVisible(t) : 1) : 0;
+  if (ci >= 0) {
+    const lbl = CH[ci].label; chapEl.querySelector('.lbl').textContent = lbl;
+    chapEl.style.color = CH_COL[lbl] || '#fff';
+    chapEl.querySelectorAll('.dots i').forEach((d, i) => d.classList.toggle('on', i <= ci));
+  }
+  // HUD
+  const hud = DIR.hud ? DIR.hud(t, st) : null;
+  hudEl.style.opacity = hud ? hud.opacity : 0;
+  hudEl.style.top = hud && hud.top ? hud.top + 'px' : '120px';
+  if (hud && hud.opacity > 0) {
+    const key = (hud.title || '') + hud.items.map((i) => i.k).join('|') + (hud.bar ? 'bar' : '');
+    if (key !== hudKey) {
+      hudEl.innerHTML = (hud.title ? `<div class="ttl">${hud.title}</div>` : '') + `<div class="row">${hud.items.map((i) => `<div class="it ${i.big ? 'big' : ''}"><div class="k">${i.k}</div><div class="v"></div></div>`).join('')}</div>`
+        + (hud.bar ? `<div class="row b" style="margin-top:20px"><div class="k bk"></div><div class="k bv" style="color:#fff"></div></div><div class="bar"><i></i></div>` : '');
+      hudKey = key;
+    }
+    const vs = hudEl.querySelectorAll('.v');
+    hud.items.forEach((i, n) => { vs[n].textContent = i.v; vs[n].style.color = i.color || '#fff'; });
+    let sp = hudEl.querySelector('svg.spark');
+    if (hud.spark) {
+      if (!sp) { hudEl.insertAdjacentHTML('beforeend', '<svg class="spark" width="448" height="150" style="display:block;margin-top:18px;overflow:visible"></svg>'); sp = hudEl.querySelector('svg.spark'); }
+      const { values, lo, hi, n, color, band, unit } = hud.spark; const W2 = 448, H2 = 112;
+      const xs = (i) => 20 + (i / (values.length - 1)) * (W2 - 40), ys = (v) => 10 + (1 - (v - lo) / (hi - lo)) * H2;
+      const shown = values.slice(0, Math.max(1, n));
+      const d = shown.map((v, i) => `${i ? 'L' : 'M'}${xs(i).toFixed(1)},${ys(v).toFixed(1)}`).join(' ');
+      const bandRect = band ? `<rect x="20" y="${ys(band[1])}" width="${W2 - 40}" height="${ys(band[0]) - ys(band[1])}" fill="rgba(111,240,176,0.10)" stroke="rgba(111,240,176,0.35)" stroke-dasharray="6 6"/>` : '';
+      const last = shown[shown.length - 1];
+      sp.innerHTML = `${bandRect}<line x1="20" y1="${10 + H2}" x2="${W2 - 20}" y2="${10 + H2}" stroke="rgba(255,255,255,0.18)"/>`
+        + `<path d="${d}" fill="none" stroke="${color}" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/>`
+        + shown.map((v, i) => `<circle cx="${xs(i)}" cy="${ys(v)}" r="${i === shown.length - 1 ? 10 : 6}" fill="${i === shown.length - 1 ? color : '#0b1117'}" stroke="${color}" stroke-width="3"/>`).join('')
+        + `<text x="${Math.min(W2 - 30, xs(shown.length - 1) + 18)}" y="${ys(last) - 16}" fill="#fff" font-family="JetBrains Mono" font-weight="700" font-size="22">${last.toFixed(1)}${unit || ''}</text>`;
+    } else if (sp) sp.remove();
+    if (hud.bar) {
+      hudEl.querySelector('.bk').textContent = hud.bar.k; hudEl.querySelector('.bv').textContent = hud.bar.text;
+      const b = hudEl.querySelector('.bar i'); b.style.width = (clamp01(hud.bar.v) * 100).toFixed(1) + '%'; b.style.background = hud.bar.color || 'var(--green)';
+    }
+  }
+  // time-lapse counter
+  const ct = DIR.counter ? DIR.counter(t, st) : null;
+  tlEl.style.opacity = ct ? ct.opacity : 0;
+  if (ct && ct.opacity > 0) {
+    tlEl.querySelector('.k').textContent = ct.k; tlEl.querySelector('.v').textContent = ct.v;
+    const dots = tlEl.querySelector('.dots');
+    if (dots.children.length !== ct.total) { dots.innerHTML = ''; for (let i = 0; i < ct.total; i++) dots.appendChild(document.createElement('i')); }
+    [...dots.children].forEach((d, i) => d.classList.toggle('on', i < ct.n));
+  }
+  // checklist card (warning signs / the fix)
+  const card = (DIR.CARDS || []).find((c) => t >= c.t0 && t < c.t1);
+  cardEl.style.opacity = card ? ss(card.t0, card.t0 + 0.35, t) * (1 - ss(card.t1 - 0.3, card.t1, t)) : 0;
+  if (card) {
+    const key = card.title;
+    if (key !== cardKey) {
+      cardEl.className = card.kind;
+      cardEl.querySelector('.h').textContent = card.title;
+      cardEl.querySelector('ul').innerHTML = card.items.map((it, n) => `<li><span class="ic">${card.kind === 'warn' ? '!' : n + 1}</span><span>${it.text}${it.sub ? `<small>${it.sub}</small>` : ''}</span></li>`).join('');
+      cardKey = key;
+    }
+    cardEl.querySelectorAll('li').forEach((li, n) => {
+      const it = card.items[n], a = ss(it.t, it.t + 0.3, t);
+      li.style.opacity = a.toFixed(3); li.style.transform = `translateX(${((1 - a) * -14).toFixed(1)}px)`;
+      li.classList.toggle('done', card.kind === 'fix' && it.done != null && t >= it.done);
+      if (card.kind === 'fix' && it.done != null && t >= it.done) li.querySelector('.ic').textContent = '✓';
+      else li.querySelector('.ic').textContent = card.kind === 'warn' ? '!' : String(n + 1);
+    });
+  }
+  // diagram / spec panel
+  const pn = DIR.panel ? DIR.panel(t, st) : null;
+  panelEl.style.opacity = pn ? pn.opacity : 0;
+  if (pn && pn.opacity > 0) {
+    const side = pn.side || 'left';
+    panelEl.style.left = side === 'left' ? '60px' : 'auto'; panelEl.style.right = side === 'right' ? '60px' : 'auto';
+    panelEl.style.width = (pn.w || 600) + 'px'; panelEl.style.top = (pn.top || 120) + 'px';
+    const html = `<div class="h" style="color:${pn.color || '#8fe9ff'}">${pn.title}</div>` + pn.html;
+    if (html !== panelKey) { panelEl.innerHTML = html; panelKey = html; }
+  }
+  // chapter card + progress
+  let cj = -1; CH.forEach((c, i) => { if (t >= c.t) cj = i; });
+  if (cj >= 0 && t < CH[cj].t + 3.2 && t < END.t0) {
+    const c = CH[cj], a = ss(c.t, c.t + 0.4, t) * (1 - ss(c.t + 2.7, c.t + 3.2, t)), col = CH_COL[c.label] || '#fff';
+    chapcardEl.style.opacity = a; chapcardEl.style.transform = `translateX(${((1 - easeOut(clamp01((t - c.t) / 0.7))) * -30).toFixed(1)}px)`;
+    chapcardEl.querySelector('.n').textContent = `${String(cj + 1).padStart(2, '0')} / ${String(CH.length).padStart(2, '0')}`; chapcardEl.querySelector('.n').style.color = col;
+    chapcardEl.querySelector('.t').textContent = c.label; chapcardEl.querySelector('.s').textContent = c.sub || '';
+    const r = chapcardEl.querySelector('.r'); r.style.background = col; r.style.width = (360 * easeOut(clamp01((t - c.t - 0.2) / 0.6))).toFixed(0) + 'px';
+  } else chapcardEl.style.opacity = 0;
+  const p0 = CH.length ? CH[0].t : 0, p1 = END.t0;
+  progEl.style.opacity = ss(p0, p0 + 0.5, t) * (1 - ss(p1 - 0.4, p1, t));
+  const pi = progEl.querySelector('i'); pi.style.width = (clamp01((t - p0) / (p1 - p0)) * 100).toFixed(2) + '%'; pi.style.background = ci >= 0 ? (CH_COL[CH[ci].label] || '#fff') : '#fff';
+  if (!progEl.querySelector('b')) CH.slice(1).forEach((c) => { const b = document.createElement('b'); b.style.left = (((c.t - p0) / (p1 - p0)) * 100).toFixed(2) + '%'; progEl.appendChild(b); });
+  cardVisible = !!card && parseFloat(cardEl.style.opacity) > 0.02; cardBottom = cardVisible ? cardEl.offsetTop + cardEl.offsetHeight : 0;
+  hudVisible = !!hud && hud.opacity > 0.02; hudBottom = hudVisible ? hudEl.offsetTop + hudEl.offsetHeight : 0;
+  const pv = !!pn && pn.opacity > 0.02;
+  leftEdge = Math.max(32, cardVisible ? cardEl.offsetLeft + cardEl.offsetWidth : 0, pv && (pn.side || 'left') === 'left' ? 60 + (pn.w || 600) : 0);
+  rightEdge = Math.min(W - 32, hudVisible ? hudEl.offsetLeft : W, pv && pn.side === 'right' ? W - 60 - (pn.w || 600) : W);
+  updateLabels(t);
+  // end card
+  endEl.style.opacity = ss(END.t0, END.t0 + 0.55, t);
+  endEl.style.transform = `translateY(${((1 - easeOut(clamp01((t - END.t0) / 0.9))) * 30).toFixed(1)}px)`;
+  endEl.querySelector('.tag').style.opacity = ss(END.t0 + 0.9, END.t0 + 1.25, t);
+  endEl.querySelector('.series').style.opacity = ss(END.t0 + 1.4, END.t0 + 1.8, t);
+}
+
+// ---------------------------------------------------------------- frame
+const TOTAL = DIR.TOTAL || Math.ceil(timeline.total);
+window.renderFrame = (t) => {
+  const { shot, p } = placeCamera(t);
+  const ctx = { shot, p, cam };
+  const so = DIR.sceneOpts ? DIR.sceneOpts(t, shot) : {};
+  const st = S.update(so.t ?? t, { camPos: cam.position, shot: shot.id, ...so });
+  if (shot.cam) placeCamera(t); // cameras that follow moving parts need this frame's positions
+  S.lights.headlamp.intensity = shot.headlamp || 0;
+  S.lights.headlamp.position.copy(cam.position).add(new V3(0, 0.2, 0));
+  let exp = 1.0, fade = 1;
+  if (t < 0.7) fade = ss(0.0, 0.7, t);
+  if (t > TOTAL - 0.95) fade = 1 - ss(TOTAL - 0.95, TOTAL - 0.15, t);
+  if (DIR.frame) { const r = DIR.frame(t, st, ctx, S) || {}; if (r.exposure != null) exp = r.exposure; }
+  renderer.toneMappingExposure = exp;
+  grade.uniforms.uFade.value = fade;
+  grade.uniforms.uWarn.value = st.warn || 0;
+  grade.uniforms.uTime.value = t;
+  let fl = 0; for (const f of (DIR.FLASHES || [])) if (t >= f.t) fl += f.a * Math.exp(-(t - f.t) / f.d);
+  grade.uniforms.uFlash.value = fl;
+  bloom.strength = 0.42 + (st.bloom || 0);
+  // unused point lights cost every pixel: drop them from the shader when dark
+  for (const L of Object.values(S.lights)) if (L && L.isPointLight) L.visible = L.intensity > 0.001;
+  comp.render();
+  updateOverlay(t, st);
+  document.getElementById('ov').style.opacity = fade;
+  return { shot: shot.id };
+};
+window.TOTAL = TOTAL;
+window.__dbg = { renderer, S, comp, cam, THREE };
+window.ready = true;
+</script></body></html>

@@ -1,0 +1,157 @@
+[
+ {
+  "id": 1,
+  "text": "Water from a cooling tower is only as cold as the weather allows. When the mould needs it colder, you need a chiller.",
+  "pause": 0.5
+ },
+ {
+  "id": 2,
+  "text": "Here's how it makes cold water, and how it slowly loses the ability to.",
+  "pause": 0.7
+ },
+ {
+  "id": 3,
+  "text": "The water chiller.",
+  "pause": 1.0
+ },
+ {
+  "id": 4,
+  "text": "A chiller doesn't make cold. It moves heat, out of the process water, and into the air outside.",
+  "pause": 0.45
+ },
+ {
+  "id": 5,
+  "text": "It does it with a refrigerant that boils at a low temperature, running round a closed loop with four main parts.",
+  "pause": 0.5
+ },
+ {
+  "id": 6,
+  "text": "First, the evaporator. Warm water from the moulds flows on one side of a heat exchanger. Cold, low pressure refrigerant flows on the other.",
+  "pause": 0.45
+ },
+ {
+  "id": 7,
+  "text": "The refrigerant boils, soaking up the heat, and the water leaves colder. A common set point is seven degrees out, twelve degrees back.",
+  "pause": 0.5
+ },
+ {
+  "id": 8,
+  "text": "Second, the compressor. It draws in the refrigerant vapour and squeezes it, so it gets hot, much hotter than the air outside.",
+  "pause": 0.45
+ },
+ {
+  "id": 9,
+  "text": "Third, the condenser. Fans pull outside air through a finned coil. The hot vapour gives up its heat, and condenses back into a liquid.",
+  "pause": 0.45
+ },
+ {
+  "id": 10,
+  "text": "Fourth, the expansion valve. It drops the pressure of the liquid, so it cools sharply, and meters just enough into the evaporator.",
+  "pause": 0.45
+ },
+ {
+  "id": 11,
+  "text": "A sensing bulb on the suction line keeps a few degrees of superheat, so only vapour, never liquid, gets back to the compressor.",
+  "pause": 0.5
+ },
+ {
+  "id": 12,
+  "text": "On the gauges, the low side tells you the boiling temperature, and the high side the condensing temperature. The gap between them is the work the compressor has to do.",
+  "pause": 0.45
+ },
+ {
+  "id": 13,
+  "text": "Every degree that condensing temperature rises adds a few percent to the power bill.",
+  "pause": 0.45
+ },
+ {
+  "id": 14,
+  "text": "An air-cooled chiller like this one throws its heat into the air around it. A water-cooled chiller sends it to a cooling tower instead.",
+  "pause": 0.7
+ },
+ {
+  "id": 15,
+  "text": "But chillers rarely fail all at once. They drift.",
+  "pause": 0.45
+ },
+ {
+  "id": 16,
+  "text": "Dust, fluff and plastic fines clog the condenser fins. Less air gets through, the condensing temperature climbs, and so do power and wear.",
+  "pause": 0.45
+ },
+ {
+  "id": 17,
+  "text": "Sooner or later, the high pressure switch trips, usually on the hottest afternoon.",
+  "pause": 0.45
+ },
+ {
+  "id": 18,
+  "text": "On the water side, scale and dirt foul the evaporator. The approach, the gap between water and refrigerant temperature, opens up.",
+  "pause": 0.45
+ },
+ {
+  "id": 19,
+  "text": "A slow refrigerant leak starves the evaporator. Superheat rises, capacity falls, and the compressor runs hot.",
+  "pause": 0.45
+ },
+ {
+  "id": 20,
+  "text": "And low water flow, from a blocked strainer or a failing pump, can freeze the water in the evaporator and split it.",
+  "pause": 0.7
+ },
+ {
+  "id": 21,
+  "text": "Warning signs: chilled water drifting above set point at full load.",
+  "pause": 0.4
+ },
+ {
+  "id": 22,
+  "text": "High head pressure, or a condensing temperature that climbs on a mild day.",
+  "pause": 0.4
+ },
+ {
+  "id": 23,
+  "text": "An approach temperature creeping up against your baseline.",
+  "pause": 0.4
+ },
+ {
+  "id": 24,
+  "text": "Bubbles in the sight glass, frost where it shouldn't be, or oil stains at the joints.",
+  "pause": 0.7
+ },
+ {
+  "id": 25,
+  "text": "So: log pressures, temperatures and approach every shift, and watch the trend.",
+  "pause": 0.45
+ },
+ {
+  "id": 26,
+  "text": "Clean the condenser coils on a schedule, more often in a dusty plant, and keep the air path clear.",
+  "pause": 0.45
+ },
+ {
+  "id": 27,
+  "text": "Treat and filter the process water, and clean the strainers.",
+  "pause": 0.45
+ },
+ {
+  "id": 28,
+  "text": "Check the fans, the electrical connections and the compressor's oil, and listen for any new noise.",
+  "pause": 0.45
+ },
+ {
+  "id": 29,
+  "text": "Have a qualified technician leak test and check the charge, and never top up without finding the leak.",
+  "pause": 0.45
+ },
+ {
+  "id": 30,
+  "text": "And test the flow switch and freeze protection, before the day you need them.",
+  "pause": 0.7
+ },
+ {
+  "id": 31,
+  "text": "Clean coils. Cold water.",
+  "pause": 0.5
+ }
+]

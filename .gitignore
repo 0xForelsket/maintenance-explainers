@@ -23,3 +23,6 @@ audio/_v.npy
 site/test_local.html
 series/site/*/test_local.html
 audio/tts_test.py
+
+# GPU worker job queue (runtime)
+series/jobs/

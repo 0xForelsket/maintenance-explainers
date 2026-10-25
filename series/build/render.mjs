@@ -18,10 +18,11 @@ else {
   if (args.skipExisting) jobs = jobs.filter((j) => !fs.existsSync(`${out}/${j.name}.jpg`));
 }
 const b = await chromium.launch({ args: ['--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist'] });
-const p = await b.newPage({ viewport: { width: Math.round(1080 * scale), height: Math.round(1920 * scale) } });
+const shell = args.shell || 'video', land = shell === 'video16';
+const p = await b.newPage({ viewport: { width: Math.round((land ? 1920 : 1080) * scale), height: Math.round((land ? 1080 : 1920) * scale) } });
 p.on('console', (m) => { if (m.type() === 'error') console.log('console:', m.text().slice(0, 300)); });
 p.on('pageerror', (e) => console.log('pageerror', e.message));
-await p.goto(`http://localhost:8765/series/shell/video.html?topic=${args.topic}&scale=${scale}&rscale=${args.rscale || 1}`);
+await p.goto(`http://localhost:8765/series/shell/${shell}.html?topic=${args.topic}&scale=${scale}&rscale=${args.rscale || 1}`);
 await p.waitForFunction(() => window.ready, null, { timeout: 300000 });
 const cdp = await p.context().newCDPSession(p);
 const t0 = Date.now();

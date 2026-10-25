@@ -1,0 +1,167 @@
+[
+ {
+  "id": 1,
+  "text": "Every shot, the plastic in this mould stays molten, right up to the part. Nothing to cut off, nothing to regrind.",
+  "pause": 0.5
+ },
+ {
+  "id": 2,
+  "text": "Here's how a hot runner does it, and how it fails.",
+  "pause": 0.7
+ },
+ {
+  "id": 3,
+  "text": "The hot runner.",
+  "pause": 1.0
+ },
+ {
+  "id": 4,
+  "text": "In a cold runner mould, the plastic in the runner freezes with the part, and is thrown away or reground every cycle.",
+  "pause": 0.45
+ },
+ {
+  "id": 5,
+  "text": "A hot runner keeps that plastic molten. The machine nozzle feeds a heated sprue, then a manifold: a steel block with flow channels drilled through it.",
+  "pause": 0.45
+ },
+ {
+  "id": 6,
+  "text": "Heaters wrap the manifold, and its channels split the melt evenly, so every cavity sees the same pressure and temperature.",
+  "pause": 0.45
+ },
+ {
+  "id": 7,
+  "text": "From the manifold, the melt runs down heated nozzles, to a gate at each cavity.",
+  "pause": 0.45
+ },
+ {
+  "id": 8,
+  "text": "Every heater has its own thermocouple. Each pair is a zone, and a controller holds every zone at its set point, often within a degree.",
+  "pause": 0.5
+ },
+ {
+  "id": 9,
+  "text": "The nozzle tip is the hard part. It must keep the plastic hot inside, while the steel around the gate is cooled, so the part can freeze.",
+  "pause": 0.45
+ },
+ {
+  "id": 10,
+  "text": "Some gates are thermal: a plug of plastic freezes at the tip between shots. Others are valve gates, where a pin driven by air or oil closes the gate.",
+  "pause": 0.5
+ },
+ {
+  "id": 11,
+  "text": "The manifold floats in an air gap, touching the mould only at a few small points, so its heat stays where the melt is.",
+  "pause": 0.45
+ },
+ {
+  "id": 12,
+  "text": "And here's the clever part. The seal between manifold and nozzle is made by heat.",
+  "pause": 0.35
+ },
+ {
+  "id": 13,
+  "text": "As the manifold warms up, it grows, and presses down on the nozzles. Cold, there's a gap. Hot, it seals.",
+  "pause": 0.45
+ },
+ {
+  "id": 14,
+  "text": "A nozzle can reach temperature in about three minutes, but it needs roughly fifteen more to grow to full size. A manifold can take half an hour, plus soak time.",
+  "pause": 0.7
+ },
+ {
+  "id": 15,
+  "text": "But a hot runner punishes shortcuts.",
+  "pause": 0.45
+ },
+ {
+  "id": 16,
+  "text": "Inject before the system has soaked, and the seal isn't made. Melt is forced out between manifold and nozzle, and floods the mould plate.",
+  "pause": 0.45
+ },
+ {
+  "id": 17,
+  "text": "Leaked plastic wraps the wiring. Heaters and thermocouples break in a line, and the mould comes out for a strip-down that can take days.",
+  "pause": 0.45
+ },
+ {
+  "id": 18,
+  "text": "Heaters fail too. Their insulation soaks up moisture, and a damp heater switched on at full power can short out.",
+  "pause": 0.45
+ },
+ {
+  "id": 19,
+  "text": "A thermocouple that slips out of its pocket reads low, so the controller overheats that zone and burns the plastic.",
+  "pause": 0.45
+ },
+ {
+  "id": 20,
+  "text": "And zones wired the wrong way round after a repair mean one controller heats the wrong nozzle.",
+  "pause": 0.45
+ },
+ {
+  "id": 21,
+  "text": "At the gate, too hot gives drool and strings. Too cold, and the gate freezes off, and the cavity runs short.",
+  "pause": 0.45
+ },
+ {
+  "id": 22,
+  "text": "And valve pins wear. Gas and resin build up around them, so the gate stops shutting cleanly.",
+  "pause": 0.7
+ },
+ {
+  "id": 23,
+  "text": "Warning signs: a zone drawing more power than usual to hold its temperature, often a sign of a leak.",
+  "pause": 0.4
+ },
+ {
+  "id": 24,
+  "text": "Zones that won't settle, or read far from their neighbours.",
+  "pause": 0.4
+ },
+ {
+  "id": 25,
+  "text": "Long gate marks, strings, or one cavity filling short.",
+  "pause": 0.4
+ },
+ {
+  "id": 26,
+  "text": "And plastic weeping from the parting line or the wiring channels.",
+  "pause": 0.7
+ },
+ {
+  "id": 27,
+  "text": "So: heat the manifold first, then the nozzles, and give the system its full soak time before the first shot.",
+  "pause": 0.45
+ },
+ {
+  "id": 28,
+  "text": "Use the controller's soft start, so damp heaters dry out slowly.",
+  "pause": 0.45
+ },
+ {
+  "id": 29,
+  "text": "Keep the mould plates within a few degrees of each other when the mould goes back together.",
+  "pause": 0.45
+ },
+ {
+  "id": 30,
+  "text": "Log every heater's resistance and every thermocouple reading at each service, and compare them with the last ones.",
+  "pause": 0.45
+ },
+ {
+  "id": 31,
+  "text": "Label every zone, and check the wiring matches after any repair.",
+  "pause": 0.45
+ },
+ {
+  "id": 32,
+  "text": "And inspect gates and valve pins on a cycle count, before a leak finds you first.",
+  "pause": 0.7
+ },
+ {
+  "id": 33,
+  "text": "Keep it hot. Keep it sealed.",
+  "pause": 0.5
+ }
+]
