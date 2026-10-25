@@ -1,0 +1,178 @@
+[
+ {
+  "id": 1,
+  "text": "Flash, burn marks, short shots, parts that stick. Often, the cause isn't the process. It's the mould.",
+  "pause": 0.5
+ },
+ {
+  "id": 2,
+  "text": "Here's how an injection mould works, and how to look after it.",
+  "pause": 0.7
+ },
+ {
+  "id": 3,
+  "text": "Mould preventive maintenance.",
+  "pause": 1.0
+ },
+ {
+  "id": 4,
+  "text": "This is a two-plate, cold-runner mould with four cavities, clamped between the fixed and moving platens of the machine.",
+  "pause": 0.45
+ },
+ {
+  "id": 5,
+  "text": "On the fixed half, the locating ring centres the mould on the platen, and the nozzle seals against the sprue bushing.",
+  "pause": 0.45
+ },
+ {
+  "id": 6,
+  "text": "The cavity plate forms the outside of each part. The core plate, on the moving half, forms the inside. They meet at the parting line.",
+  "pause": 0.45
+ },
+ {
+  "id": 7,
+  "text": "Guide pillars and bushes line the two halves up, before the steel faces touch.",
+  "pause": 0.45
+ },
+ {
+  "id": 8,
+  "text": "The mould clamps shut. Melt is injected down the sprue, along the runners, and through small gates into the cavities.",
+  "pause": 0.45
+ },
+ {
+  "id": 9,
+  "text": "The air in each cavity has to get out ahead of the melt. It escapes through vents ground into the parting line, just a few hundredths of a millimetre deep.",
+  "pause": 0.4
+ },
+ {
+  "id": 10,
+  "text": "Deep enough for air. Too shallow for plastic.",
+  "pause": 0.45
+ },
+ {
+  "id": 11,
+  "text": "Water flows through cooling channels around each cavity, connected with fittings and sealed with O-rings. It carries the heat away. Cooling is usually the longest part of the cycle.",
+  "pause": 0.45
+ },
+ {
+  "id": 12,
+  "text": "Then the mould opens. The parts stay on the cores, and the sprue puller pulls the sprue out of the bushing.",
+  "pause": 0.45
+ },
+ {
+  "id": 13,
+  "text": "Behind the core plate, between the spacer blocks, the ejector plates move forward. Ejector pins push the parts off the cores, and they drop clear.",
+  "pause": 0.45
+ },
+ {
+  "id": 14,
+  "text": "Return pins and springs bring the ejector plates back, and the mould closes for the next shot.",
+  "pause": 0.5
+ },
+ {
+  "id": 15,
+  "text": "A busy mould repeats this cycle hundreds of thousands of times a year.",
+  "pause": 0.7
+ },
+ {
+  "id": 16,
+  "text": "And every cycle leaves something behind.",
+  "pause": 0.45
+ },
+ {
+  "id": 17,
+  "text": "Gas and residue build up in the vents. When a vent blocks, the trapped air is squeezed so hard that it scorches the plastic. That's deezeling, and it leaves burn marks.",
+  "pause": 0.4,
+  "caption": "Gas and residue build up in the vents. When a vent blocks, the trapped air is squeezed so hard that it scorches the plastic. That's dieseling, and it leaves burn marks."
+ },
+ {
+  "id": 18,
+  "text": "Or the air holds the melt back, and the cavity never fills. A short shot.",
+  "pause": 0.45
+ },
+ {
+  "id": 19,
+  "text": "Scale and rust narrow the cooling channels. Less water flows, hot spots form, and the cycle has to get longer to cool the parts.",
+  "pause": 0.45
+ },
+ {
+  "id": 20,
+  "text": "Guide pillars and bushes wear. The halves no longer line up, the parting line gets damaged, and plastic squeezes out as flash.",
+  "pause": 0.45
+ },
+ {
+  "id": 21,
+  "text": "Ejector pins gall and stick, or snap, and parts hang up on the core.",
+  "pause": 0.45
+ },
+ {
+  "id": 22,
+  "text": "Residue plates out on the cavity surface. Hardened O-rings leak, and water creeps out onto the parting line.",
+  "pause": 0.45
+ },
+ {
+  "id": 23,
+  "text": "And a chilled mould, left standing in humid air, sweats. Condensation forms on the steel, and rust follows.",
+  "pause": 0.7
+ },
+ {
+  "id": 24,
+  "text": "Warning signs: flash, burn marks, and short shots.",
+  "pause": 0.4
+ },
+ {
+  "id": 25,
+  "text": "Parts sticking or dragging, and noisy ejection.",
+  "pause": 0.4
+ },
+ {
+  "id": 26,
+  "text": "Water at the parting line, and cavities running at different temperatures.",
+  "pause": 0.4
+ },
+ {
+  "id": 27,
+  "text": "And the cycle time creeping up.",
+  "pause": 0.7
+ },
+ {
+  "id": 28,
+  "text": "So: plan maintenance by shot count, not just by the calendar.",
+  "pause": 0.45
+ },
+ {
+  "id": 29,
+  "text": "Every shift, on the press: clean the parting line and the vents, check for water leaks, and lightly grease the guide pins.",
+  "pause": 0.45
+ },
+ {
+  "id": 30,
+  "text": "At each periodic service, open up the ejector half. Clean and lubricate the pins, check the springs, and measure the vent depths.",
+  "pause": 0.45
+ },
+ {
+  "id": 31,
+  "text": "Descale and flow-test every cooling circuit, and fit new O-rings.",
+  "pause": 0.45
+ },
+ {
+  "id": 32,
+  "text": "At a longer interval, strip the whole mould down. Record every service on the mould history card, with the shot count.",
+  "pause": 0.45
+ },
+ {
+  "id": 33,
+  "text": "Before storage, blow the water lines dry, protect the steel with rust preventive, and store the mould closed.",
+  "pause": 0.45
+ },
+ {
+  "id": 34,
+  "text": "Follow the tool owner's maintenance spec, and never modify the mould without approval. After every service, check the first-off parts.",
+  "pause": 0.7
+ },
+ {
+  "id": 35,
+  "text": "Clean vents. Free pins. Good parts.",
+  "pause": 0.5
+ }
+]

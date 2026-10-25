@@ -1,5 +1,6 @@
 # dependencies + downloaded models
 node_modules/
+.venv/
 models/
 __pycache__/
 
@@ -26,3 +27,8 @@ audio/tts_test.py
 
 # GPU worker job queue (runtime)
 series/jobs/
+
+# Blender build outputs (rebuilt by build_scene.py from story/director exports)
+*.blend
+*.blend1
+series/topics/*/blender/gen/

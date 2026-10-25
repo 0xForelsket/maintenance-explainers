@@ -9,6 +9,7 @@
 @font-face { font-family: 'JetBrains Mono'; font-weight: 700; src: url(/node_modules/@fontsource/jetbrains-mono/files/jetbrains-mono-latin-700-normal.woff2) format('woff2'); }
 :root { --cyan: #8fe9ff; --amber: #ffb35c; --red: #ff5a4e; --green: #6ff0b0; }
 html, body { margin: 0; background: #000; overflow: hidden; }
+html.overlay, html.overlay body { background: transparent; }
 #stage { position: relative; width: 1920px; height: 1080px; }
 canvas { position: absolute; inset: 0; }
 #ov { position: absolute; inset: 0; pointer-events: none; color: #fff; }
@@ -102,22 +103,33 @@ import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js'
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 import { SMAAPass } from 'three/addons/postprocessing/SMAAPass.js';
 import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
+import { makeCamera } from '/series/shell/camera16.js';
 
 const q = new URLSearchParams(location.search);
 const TOPIC = q.get('topic');
 const BASE = `/series/topics/${TOPIC}/`;
 const SCALE = +(q.get('scale') || 1), RS = +(q.get('rscale') || 1);
 const W = 1920, H = 1080, RW = Math.round(W * SCALE * RS), RH = Math.round(H * SCALE * RS);
+// overlay=1: no 3D at all — a transparent page with only the captions, labels, HUD, panels and cards, for compositing
+// over frames rendered elsewhere (Blender). Camera from blender/gen/camera.json, anchors from anchors.json.
+const OVERLAY = q.get('overlay') === '1';
+if (OVERLAY) document.documentElement.classList.add('overlay');
 document.querySelector('#stage').style.transform = `scale(${SCALE})`;
 document.querySelector('#stage').style.transformOrigin = '0 0';
 await Promise.all(['800 66px Inter', '600 30px Inter', '700 40px "Space Grotesk"', '700 30px "JetBrains Mono"', '500 30px "JetBrains Mono"'].map((f) => document.fonts.load(f)));
 await document.fonts.ready;
 
-const SceneMod = await import(BASE + 'scene.js');
 const DIR = await import(BASE + 'director.js');
 const timeline = await (await fetch(BASE + 'timeline.json')).json();
-
-const renderer = new THREE.WebGLRenderer({ antialias: false, preserveDrawingBuffer: true });
+const cam = new THREE.PerspectiveCamera(40, W / H, 0.03, 400);
+let S = null, renderer = null, comp = null, bloom = null, grade = null, STORY = null, ANCH = null, CAMJ = null;
+if (OVERLAY) {
+  STORY = await import(BASE + 'story.js');
+  ANCH = await (await fetch(BASE + 'anchors.json')).json();
+  CAMJ = await (await fetch(BASE + 'blender/gen/camera.json')).json();
+} else {
+const SceneMod = await import(BASE + 'scene.js');
+renderer = new THREE.WebGLRenderer({ antialias: false, preserveDrawingBuffer: true });
 renderer.setPixelRatio(1); renderer.setSize(W, H);
 renderer.domElement.style.width = W + 'px'; renderer.domElement.style.height = H + 'px';
 renderer.setSize(RW, RH, false);
@@ -125,17 +137,16 @@ renderer.toneMapping = THREE.ACESFilmicToneMapping;
 renderer.shadowMap.enabled = true; renderer.shadowMap.type = q.get('soft') ? THREE.PCFSoftShadowMap : THREE.PCFShadowMap;
 document.querySelector('#stage').prepend(renderer.domElement);
 
-const S = await SceneMod.build(renderer, { fontFamily: 'Inter', quality: 'high' });
+S = await SceneMod.build(renderer, { fontFamily: 'Inter', quality: 'high' });
 if (!q.get('fullenv')) S.stage.finalizeEnv(true);
-const cam = new THREE.PerspectiveCamera(40, W / H, 0.03, 400);
 const rt = new THREE.WebGLRenderTarget(RW, RH, { type: THREE.HalfFloatType });
-const comp = new EffectComposer(renderer, rt);
+comp = new EffectComposer(renderer, rt);
 comp.addPass(new RenderPass(S.scene, cam));
-const bloom = new UnrealBloomPass(new THREE.Vector2(RW, RH), 0.42, 0.55, 0.97);
+bloom = new UnrealBloomPass(new THREE.Vector2(RW, RH), 0.42, 0.55, 0.97);
 comp.addPass(bloom);
 comp.addPass(new OutputPass());
 comp.addPass(new SMAAPass(RW, RH));
-const grade = new ShaderPass({
+grade = new ShaderPass({
   uniforms: { tDiffuse: { value: null }, uTime: { value: 0 }, uVig: { value: 0.75 }, uGrain: { value: 0.045 }, uWarn: { value: 0 }, uCA: { value: 0.006 }, uFade: { value: 1 }, uFlash: { value: 0 } },
   vertexShader: `varying vec2 vUv; void main(){ vUv = uv; gl_Position = projectionMatrix*modelViewMatrix*vec4(position,1.0); }`,
   fragmentShader: `
@@ -158,55 +169,26 @@ const grade = new ShaderPass({
     }`,
 });
 comp.addPass(grade);
+}
 
 const V3 = THREE.Vector3;
 const clamp01 = (x) => Math.min(1, Math.max(0, x));
 const ss = (a, b, x) => { const t = clamp01((x - a) / (b - a)); return t * t * (3 - 2 * t); };
-const ease = (x) => x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
 const easeOut = (x) => 1 - Math.pow(1 - x, 3);
-const EZ = { lin: (x) => x, ease, out: easeOut };
 
 // ---------------------------------------------------------------- camera
-const SH = DIR.SHOTS;
-SH.forEach((s) => {
-  if (!s.keys) return;
-  s.posC = new THREE.CatmullRomCurve3(s.keys.map((k) => new V3(...k[1])));
-  s.tgtC = new THREE.CatmullRomCurve3(s.keys.map((k) => new V3(...k[2])));
-});
-function keyU(s, p) {
-  const ks = s.keys, n = ks.length;
-  if (n === 2) return p;
-  for (let i = 0; i < n - 1; i++) if (p <= ks[i + 1][0]) return (i + (p - ks[i][0]) / (ks[i + 1][0] - ks[i][0])) / (n - 1);
-  return 1;
-}
-const noise1 = (t, k) => Math.sin(t * 1.7 + k) * 0.5 + Math.sin(t * 3.1 + k * 2.3) * 0.3 + Math.sin(t * 7.3 + k * 4.1) * 0.2;
+const CAM = makeCamera(THREE, DIR);
 function placeCamera(t) {
-  const s = SH.find((x) => t >= x.t0 && t < x.t1) || SH[SH.length - 1];
-  const p = clamp01((t - s.t0) / (s.t1 - s.t0));
-  const pe = (typeof s.ez === 'function' ? s.ez : EZ[s.ez || 'ease'])(p);
-  let pos, tgt, fov, roll = s.roll || 0;
-  if (s.cam) { const r = s.cam(t, p, S); pos = Array.isArray(r.pos) ? new V3(...r.pos) : r.pos; tgt = Array.isArray(r.tgt) ? new V3(...r.tgt) : r.tgt; fov = r.fov; roll = r.roll || 0; }
-  else {
-    const u = keyU(s, pe);
-    pos = s.posC.getPoint(u); tgt = s.tgtC.getPoint(u);
-    const ks = s.keys; fov = ks[0][3] + (ks[ks.length - 1][3] - ks[0][3]) * pe;
+  if (CAMJ) {   // overlay: the exact per-frame camera the Blender render used
+    const n = Math.max(0, Math.min(CAMJ.frames - 1, Math.round(t * CAMJ.fps)));
+    const c = { pos: new V3(...CAMJ.pos[n]), tgt: new V3(...CAMJ.tgt[n]), fov: CAMJ.fov[n], roll: CAMJ.roll[n], shift: CAMJ.shift[n] };
+    CAM.apply(cam, c, W, H);
+    const s = CAM.shots.find((x) => t >= x.t0 && t < x.t1) || CAM.shots[CAM.shots.length - 1];
+    return { shot: s, p: clamp01((t - s.t0) / (s.t1 - s.t0)) };
   }
-  const hd = s.hand ?? 0.006;
-  pos.add(new V3(noise1(t, 1), noise1(t, 2), noise1(t, 3)).multiplyScalar(hd * pos.distanceTo(tgt) * 0.4));
-  let sh = 0;
-  for (const k of (DIR.SHAKES || [])) if (t >= k.t && t < k.t + k.d * 4) sh += k.a * Math.exp(-(t - k.t) / k.d);
-  if (sh > 0) {
-    const f = 38, d = pos.distanceTo(tgt);
-    pos.add(new V3(Math.sin(t * f * 1.3), Math.sin(t * f * 1.7 + 1), 0).multiplyScalar(sh * d * 0.05));
-    tgt.add(new V3(Math.sin(t * f * 1.1 + 2), Math.sin(t * f * 0.9 + 3), 0).multiplyScalar(sh * d * 0.04));
-  }
-  cam.position.copy(pos); cam.fov = fov; cam.up.set(Math.sin(roll), Math.cos(roll), 0);
-  cam.lookAt(tgt);
-  // shift the framing sideways (subject off-centre) so side panels don't cover it
-  const sx = (typeof s.shift === 'function' ? s.shift(t, p) : s.shift) || 0;
-  if (sx) cam.setViewOffset(W, H, -sx * W, 0, W, H); else cam.clearViewOffset();
-  cam.updateProjectionMatrix();
-  return { shot: s, p };
+  const c = CAM.place(t, S);
+  CAM.apply(cam, c, W, H);
+  return { shot: c.shot, p: c.p };
 }
 
 // ---------------------------------------------------------------- captions
@@ -222,11 +204,16 @@ for (const line of timeline.lines) {
 }
 CHUNKS.forEach((c, i) => { c.t0 = c.words[0].s - 0.04; const n = CHUNKS[i + 1]; c.t1 = (n && n.line === c.line) ? n.words[0].s - 0.04 : c.line.end + 0.35; });
 let capKey = null;
+const CHUNK_CAPS = DIR.CAPTION_MODE === 'chunk';   // the whole chunk at once (no word-by-word pop-in)
 function updateCaptions(t) {
   const c = CHUNKS.find((x) => t >= x.t0 && t < x.t1);
   const key = c ? CHUNKS.indexOf(c) : -1;
-  if (key !== capKey) { capEl.innerHTML = c ? c.words.map((w) => `<span class="w">${w.w}</span>`).join(' ') : ''; capKey = key; }
+  if (key !== capKey) {
+    capEl.innerHTML = c ? c.words.map((w) => `<span class="w"${CHUNK_CAPS ? ' style="opacity:1;transform:none"' : ''}>${w.w}</span>`).join(' ') : '';
+    capKey = key;
+  }
   if (!c) return;
+  if (CHUNK_CAPS) { capEl.style.opacity = ss(c.t0, c.t0 + 0.14, t).toFixed(3); return; }
   const spans = capEl.querySelectorAll('.w');
   c.words.forEach((w, i) => {
     const a = clamp01((t - (w.s - 0.05)) / 0.09);
@@ -250,19 +237,26 @@ LABELS.forEach((L) => {
   svg.append(L.line, L.ring, L.dot);
 });
 const proj = (v) => { const p = v.clone().project(cam); return [(p.x * 0.5 + 0.5) * W, (-p.y * 0.5 + 0.5) * H]; };
-function anchorOf(L, t) {
+function anchorOf(L, t, st) {
   if (typeof L.anchor === 'function') return L.anchor(S, t);
   if (Array.isArray(L.anchor)) return new V3(...L.anchor);
+  if (ANCH) {   // overlay: rest position from anchors.json, moved with its rig (or riding on the shot)
+    const a = ANCH[L.anchor];
+    if (!a) { console.error('missing anchor ' + L.anchor); return new V3(0, 0, 0); }
+    if (a.rig === 'shot') return new V3(...STORY.shotPoint(st, a.p));
+    const o = STORY.rigOffset(a.rig || '', st);
+    return new V3(a.p[0] + o[0], a.p[1] + o[1], a.p[2] + o[2]);
+  }
   return S.anchors[L.anchor];
 }
-function updateLabels(t) {
+function updateLabels(t, st) {
   for (const L of LABELS) {
     const a = ss(L.t0, L.t0 + 0.3, t) * (1 - ss(L.t1 - 0.25, L.t1, t));
     const vis = a > 0.001;
     L.el.style.display = vis ? 'block' : 'none';
     [L.line, L.dot, L.ring].forEach((e) => (e.style.display = vis ? '' : 'none'));
     if (!vis) continue;
-    const [x, y] = proj(anchorOf(L, t));
+    const [x, y] = proj(anchorOf(L, t, st));
     const g = ss(L.t0, L.t0 + 0.28, t);
     const lx = x + L.dx * g, ly = y + L.dy * g;
     L.line.setAttribute('x1', x); L.line.setAttribute('y1', y);
@@ -394,7 +388,7 @@ function updateOverlay(t, st) {
   const pv = !!pn && pn.opacity > 0.02;
   leftEdge = Math.max(32, cardVisible ? cardEl.offsetLeft + cardEl.offsetWidth : 0, pv && (pn.side || 'left') === 'left' ? 60 + (pn.w || 600) : 0);
   rightEdge = Math.min(W - 32, hudVisible ? hudEl.offsetLeft : W, pv && pn.side === 'right' ? W - 60 - (pn.w || 600) : W);
-  updateLabels(t);
+  updateLabels(t, st);
   // end card
   endEl.style.opacity = ss(END.t0, END.t0 + 0.55, t);
   endEl.style.transform = `translateY(${((1 - easeOut(clamp01((t - END.t0) / 0.9))) * 30).toFixed(1)}px)`;
@@ -406,6 +400,15 @@ function updateOverlay(t, st) {
 const TOTAL = DIR.TOTAL || Math.ceil(timeline.total);
 window.renderFrame = (t) => {
   const { shot, p } = placeCamera(t);
+  if (OVERLAY) {
+    const st = { ...STORY.stateAt(t), ...(DIR.sceneOpts ? DIR.sceneOpts(t, shot) : {}) };
+    let fade = 1;
+    if (t < 0.7) fade = ss(0.0, 0.7, t);
+    if (t > TOTAL - 0.95) fade = 1 - ss(TOTAL - 0.95, TOTAL - 0.15, t);
+    updateOverlay(t, st);
+    document.getElementById('ov').style.opacity = fade;
+    return { shot: shot.id };
+  }
   const ctx = { shot, p, cam };
   const so = DIR.sceneOpts ? DIR.sceneOpts(t, shot) : {};
   const st = S.update(so.t ?? t, { camPos: cam.position, shot: shot.id, ...so });
